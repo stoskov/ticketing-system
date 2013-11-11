@@ -1,0 +1,57 @@
+﻿@model TicketingSystem.Models.Comment
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset class="form-horizontal">
+        <legend>Comment</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="control-group">
+            @Html.LabelFor(model => model.UserId, "UserId", new { @class = "control-label" })
+            <div class="controls">
+                @Html.DropDownList("UserId", String.Empty)
+                @Html.ValidationMessageFor(model => model.UserId, null, new { @class = "help-inline" })
+            </div>
+        </div>
+
+        <div class="control-group">
+            @Html.LabelFor(model => model.Content, new { @class = "control-label" })
+            <div class="controls">
+                @Html.DisplayFor(model => model.Content)
+                @Html.ValidationMessageFor(model => model.Content, null, new { @class = "help-inline" })
+            </div>
+        </div>
+
+        <div class="control-group">
+            @Html.LabelFor(model => model.TicketId, "TicketId", new { @class = "control-label" })
+            <div class="controls">
+                @Html.DisplayFor(model => model.Ticket.Title)
+                @Html.ValidationMessageFor(model => model.Ticket.Title, null, new { @class = "help-inline" })
+            </div>
+        </div>
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Save" class="btn" />
+        </div>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

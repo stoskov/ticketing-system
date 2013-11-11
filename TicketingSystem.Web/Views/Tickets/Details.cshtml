@@ -1,0 +1,48 @@
+﻿@model TicketDetailsViewModel
+@{
+    this.ViewBag.Title = "Ticketing System";
+}
+
+<h1>Ticketing System</h1>
+<h2>@this.Model.Title</h2>
+<h3>Category: @this.Model.CategoryName</h3>
+
+<div class="row-fluid">
+    <div class="span4">
+        <div>
+            <strong>Author:</strong>
+            <span>@this.Model.AuthorName</span>
+        </div>
+        <div>
+            <strong>Priority:</strong>
+            <span>@this.Model.Priority</span>
+        </div>
+    </div>
+
+    <div class="span4">
+        <img src="@this.Model.ScreenshotUrl" alt="Ticket Screenshot" />
+    </div>
+
+    <div class="span4">
+        <div>
+            <strong>Description:</strong>
+            <span>@this.Model.Description</span>
+        </div>
+    </div>
+</div>
+
+<h3>Comments:</h3>
+<div id="comments">
+    @foreach (CommentViewModel comment in this.Model.Comments)
+    {
+        @Html.Partial("_CommentPartial", comment)
+
+    }
+</div>
+
+<div class="row-fluid">
+    @{
+        var commentViewMode = new CommentViewModel() { TicketId = Model.Id };
+        @Html.Partial("_PostCommentPartial", commentViewMode);
+    }
+</div>

@@ -1,0 +1,53 @@
+﻿@model IEnumerable<TicketSummaryViewModel>
+@using TicketingSystem.Web.Helpers
+
+@{
+    this.ViewBag.Title = "Ticketing System - Home";
+}
+
+<h3>Hot tickets</h3>
+
+
+@for (int i = 0; i < this.Model.Count(); i++)
+{
+	var ticket = this.Model.ElementAt(i);
+
+    if (i < this.Model.Count() && i % 3 == 0)
+    {
+    @:<div class="row-fluid">
+	}
+    
+        <div class="span4 page-index">
+            <h4>
+                <a href="@this.Url.Action("Details", "Tickets", new { id = ticket.Id })">
+                    @ticket.Title
+                </a>
+            </h4>
+            <div>
+                <span class="label thiny">Category</span>
+                <span>@ticket.CategoryName</span>
+            </div>
+            <div>
+                <span class="label thiny">Author</span>
+                <span>@ticket.AuthorName</span>
+            </div>
+            <div>
+                <span class="label thiny">Priority</span>
+                <span>@ticket.Priority</span>
+            </div>
+            <div>
+                <span class="label thiny">Status</span>
+                <span>@ticket.Status</span>
+            </div>
+            <div>
+                <span class="label thiny">Comments</span>
+                <span>@ticket.CommentsCount</span>
+			</div>
+    
+		</div>
+    
+        if ((i > 0 && (i + 1) % 3 == 0) || i == this.Model.Count() - 1)
+        {
+                @:</div>
+        }
+}
