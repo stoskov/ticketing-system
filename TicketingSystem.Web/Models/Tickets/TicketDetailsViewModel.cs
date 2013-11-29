@@ -18,10 +18,16 @@ namespace TicketingSystem.Web.Models.Tickets
 
 		public string Description { get; set; }
 
+		public int CategoryId { get; set; }
+
 		public string CategoryName { get; set; }
 
 		public TicketPriority Priority { get; set; }
 
-		public ICollection<CommentViewModel> Comments { get; set; }
+		public TicketStatus Status { get; set; }
+
+		public int CommentsCount { get; set; }
+
+		public ICollection<CommentDetailsViewModel> Comments { get; set; }
 	}
 }

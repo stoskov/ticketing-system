@@ -187,7 +187,7 @@
     <Compile Include="Models\Accounts\RegisterViewModel.cs" />
     <Compile Include="Models\Categories\CategorySummaryViewModel.cs" />
     <Compile Include="Models\Categories\CategoryViewModel.cs" />
-    <Compile Include="Models\Comments\CommentViewModel.cs" />
+    <Compile Include="Models\Comments\CommentDetailsViewModel.cs" />
     <Compile Include="Models\Tickets\TicketDeleteViewModel.cs" />
     <Compile Include="Models\Tickets\TicketCreateUpdateViewModel.cs" />
     <Compile Include="Models\Tickets\TicketDetailsViewModel.cs" />

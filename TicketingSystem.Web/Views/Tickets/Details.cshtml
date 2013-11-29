@@ -1,51 +1,105 @@
-﻿@using TicketingSystem.Web.Models.Comments;
-@using TicketingSystem.Web.Models.Tickets;
-
-@model TicketDetailsViewModel
+﻿@model TicketDetailsViewModel
 @{
-    this.ViewBag.Title = "Ticketing System";
+    this.ViewBag.Title = "Ticketing Details";
 }
 
-<h1>Ticketing System</h1>
-<h2>@this.Model.Title</h2>
-<h3>Category: @this.Model.CategoryName</h3>
+<h2>Ticket Details</h2>
+
+<div class="row-fluid">
+    <header>
+        <p class="ticket-title">@this.Model.Title</p>
+
+    </header>
+</div>
 
 <div class="row-fluid">
     <div class="span4">
-        <div>
-            <strong>Author:</strong>
-            <span>@this.Model.AuthorName</span>
-        </div>
-        <div>
+        <p>
+            <strong>Category:</strong>
+            <span class="ticket-info">
+                <a href="@this.Url.Action("Details", "Categories", new { id = this.Model.CategoryId })">
+                    @this.Model.CategoryName
+                </a>
+            </span>
+        </p>
+        <p>
             <strong>Priority:</strong>
-            <span>@this.Model.Priority</span>
-        </div>
+            <span class="ticket-info">@this.Model.Priority</span>
+        </p>
+        <p>
+            <strong>Status:</strong>
+            <span class="ticket-info">@this.Model.Status</span>
+        </p>
+
+        <p>
+            <strong>Open by:</strong>
+            <span class="ticket-info">@this.Model.AuthorName</span>
+        </p>
+    </div>
+    <div class="span8 clear">
+        <img class="ticket-image" width="200" height="200" src="@this.Model.ScreenshotUrl" alt="Ticket Screenshot" />
     </div>
 
-    <div class="span4">
-        <img src="@this.Model.ScreenshotUrl" alt="Ticket Screenshot" />
-    </div>
-
-    <div class="span4">
-        <div>
-            <strong>Description:</strong>
-            <span>@this.Model.Description</span>
-        </div>
-    </div>
 </div>
 
-<h3>Comments:</h3>
-<div id="comments">
-    @foreach (CommentViewModel comment in this.Model.Comments)
-    {
-        @Html.Partial("_CommentPartial", comment)
-
-    }
+<div class="row-fluid separator">
+    <strong>Description:</strong>
 </div>
 
 <div class="row-fluid">
-    @{
-        var commentViewMode = new CommentViewModel() { TicketId = Model.Id };
-        @Html.Partial("_PostCommentPartial", commentViewMode);
-    }
+    <p class="span12 ticket-description">
+        @this.Model.Description
+    </p>
+</div>
+
+<div class="row-fluid separator">
+    <strong>Comments(@this.Model.CommentsCount):</strong>
+</div>
+
+@foreach (CommentDetailsViewModel comment in this.Model.Comments)
+{
+    @Html.Partial("_CommentPartial", comment);
+}
+
+<div class="row-fluid">
+    <div class="pagination">
+        <ul>
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li>
+                    <a href='@Url.Action("Details", new { commentsPage = ViewBag.CurrentPage - 1 })'>Prev</a>
+                </li>
+            }
+            else
+            {
+                <li class="disabled">
+                    <a href='#'>Prev</a>
+                </li>
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.PagesCount)
+            {
+                <li>
+                    <a href='@Url.Action("Details", new { commentsPage = ViewBag.CurrentPage + 1 })'>Next</a>
+                </li>
+            }
+            else
+            {
+                <li class="disabled">
+                    <a href='#'>Next</a>
+                </li>
+            }
+
+        </ul>
+    </div>
+</div>
+
+<div class="row-fluid">
+
+    <div class="row-fluid">
+        @{
+            var commentViewMode = new CommentDetailsViewModel() { TicketId = this.Model.Id };
+            @Html.Partial("_PostCommentPartial", commentViewMode);
+        }
+    </div>
 </div>

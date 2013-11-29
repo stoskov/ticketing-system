@@ -17,6 +17,12 @@ namespace TicketingSystem.Models
 
 		public int TicketId { get; set; }
 
+		public DateTime PostDate { get; set; }
+
 		public virtual Ticket Ticket { get; set; }
+		public Comment()
+		{
+			this.PostDate = DateTime.Now;
+		}
 	}
 }

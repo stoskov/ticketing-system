@@ -8,5 +8,8 @@
     <Setting Name="HomePageCategoryNumber" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">6</Value>
     </Setting>
+    <Setting Name="TicketPageCommentsPageSize" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

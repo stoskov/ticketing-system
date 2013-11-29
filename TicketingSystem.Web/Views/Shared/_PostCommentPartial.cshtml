@@ -1,31 +1,21 @@
 ﻿@using TicketingSystem.Web.Models.Comments;
 
-@model CommentViewModel
+@model CommentDetailsViewModel
 
 @{
     if (User.Identity.IsAuthenticated)
     {
-        using (Ajax.BeginForm("PostComment", "Tickets",
-            new AjaxOptions
-            {
-                HttpMethod = "Post",
-                InsertionMode = InsertionMode.InsertAfter,
-                UpdateTargetId = "comments",
-                OnSuccess = "clearText"
-            }))
+        using (Html.BeginForm("PostComment", "Tickets"))
         {
-            @Html.EditorFor(m => m.Content)
-            @Html.Hidden("TicketId", Model.TicketId)
-            @Html.ValidationMessageFor(model => model.Content, null, new { @class = "help-inline" })
-            @Html.AntiForgeryToken()
-            <input type="submit" value="Post" />
+            <div class="post-ticket-comment-form">
+                @Html.EditorFor(m => m.Content)
+                @Html.Hidden("TicketId", Model.TicketId)
+                @Html.ValidationMessageFor(model => model.Content, null, new { @class = "help-inline" })
+                @Html.AntiForgeryToken()
+            </div>
+            <div>
+                <input class="btn btn-primary" type="submit" value="Post" />
+            </div>
         }
     }
 }
-
-<script>
-    function clearText() {
-        $("#Content").val("");
-    }
-</script>
-

@@ -1,8 +1,9 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace TicketingSystem.Web.Models.Comments
 {
-	public class CommentViewModel
+	public class CommentDetailsViewModel
 	{
 		public int Id { get; set; }
 
@@ -12,5 +13,8 @@ namespace TicketingSystem.Web.Models.Comments
 
 		[DataType(DataType.MultilineText)]
 		public string Content { get; set; }
+
+		[Display(Name = "Date")]
+		public DateTime PostDate { get; set; }
 	}
 }

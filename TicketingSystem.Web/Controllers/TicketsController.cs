@@ -14,7 +14,7 @@ namespace TicketingSystem.Web.Controllers
 	public class TicketsController : BaseController
 	{
 		private const int PageSize = 5;
-  
+
 		[AllowAnonymous]
 		public ActionResult Details(int? id)
 		{
@@ -35,22 +35,40 @@ namespace TicketingSystem.Web.Controllers
 			{
 				AuthorName = ticket.Author.UserName,
 				CategoryName = ticket.Category.Name,
+				CategoryId = ticket.Category.Id,
 				Description = ticket.Description,
 				Priority = ticket.Priority,
+				Status = ticket.Status,
 				ScreenshotUrl = ticket.ScreenshotUrl,
 				Title = ticket.Title,
-				Id = ticket.Id
+				Id = ticket.Id,
+				CommentsCount = ticket.Comments.Count
 			};
 
+			var commentsPageString = this.Request.QueryString["commentsPage"];
+			var commentsPage = 1;
+
+			if (!string.IsNullOrEmpty(commentsPageString) && !int.TryParse(commentsPageString, out commentsPage))
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
 			ticketViewModel.Comments = ticket.Comments
-											 .Select(c => new CommentViewModel()
+											 .Select(c => new CommentDetailsViewModel()
 													{
 														Id = c.Id,
 														UserName = c.User.UserName,
 														Content = c.Content,
+														PostDate = c.PostDate,
 														TicketId = c.Ticket.Id
 													})
+											 .OrderByDescending(c => c.PostDate)
+											 .Skip((commentsPage - 1) * Properties.Settings.Default.TicketPageCommentsPageSize)
+											 .Take(Properties.Settings.Default.TicketPageCommentsPageSize)
 											 .ToList();
+
+			this.ViewBag.CurrentPage = commentsPage;
+			this.ViewBag.PagesCount = (int)Math.Ceiling((double)ticket.Comments.Count / Properties.Settings.Default.TicketPageCommentsPageSize);
 
 			return this.View(ticketViewModel);
 		}
@@ -221,7 +239,7 @@ namespace TicketingSystem.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult PostComment(CommentViewModel commentViewModel)
+		public ActionResult PostComment(CommentDetailsViewModel commentViewModel)
 		{
 			if (!this.ModelState.IsValid)
 			{
@@ -249,7 +267,7 @@ namespace TicketingSystem.Web.Controllers
 			this.Data.Comments.Add(comment);
 			this.Data.SaveChanges();
 
-			return this.PartialView("_CommentPartial", commentViewModel);
+			return this.RedirectToAction("Details", new { Id = comment.TicketId });
 		}
 
 		public ActionResult ListAll(int? id, string categoryFilter)
