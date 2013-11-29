@@ -11,7 +11,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using TicketingSystem.Data;
 using TicketingSystem.Models;
-using TicketingSystem.Web.Models;
+using TicketingSystem.Web.Models.Accounts;
 
 namespace TicketingSystem.Web.Controllers
 {

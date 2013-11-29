@@ -5,7 +5,8 @@ using System.Net;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using TicketingSystem.Models;
-using TicketingSystem.Web.Models;
+using TicketingSystem.Web.Models.Comments;
+using TicketingSystem.Web.Models.Tickets;
 
 namespace TicketingSystem.Web.Controllers
 {
@@ -13,6 +14,46 @@ namespace TicketingSystem.Web.Controllers
 	public class TicketsController : BaseController
 	{
 		private const int PageSize = 5;
+  
+		[AllowAnonymous]
+		public ActionResult Details(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			var ticketId = id.GetValueOrDefault();
+			var ticket = this.Data.Tickets.GetById(ticketId);
+
+			if (ticket == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
+
+			var ticketViewModel = new TicketDetailsViewModel()
+			{
+				AuthorName = ticket.Author.UserName,
+				CategoryName = ticket.Category.Name,
+				Description = ticket.Description,
+				Priority = ticket.Priority,
+				ScreenshotUrl = ticket.ScreenshotUrl,
+				Title = ticket.Title,
+				Id = ticket.Id
+			};
+
+			ticketViewModel.Comments = ticket.Comments
+											 .Select(c => new CommentViewModel()
+													{
+														Id = c.Id,
+														UserName = c.User.UserName,
+														Content = c.Content,
+														TicketId = c.Ticket.Id
+													})
+											 .ToList();
+
+			return this.View(ticketViewModel);
+		}
 
 		[HttpGet]
 		public ActionResult Create()
@@ -92,7 +133,6 @@ namespace TicketingSystem.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult Edit(int? id, TicketCreateUpdateViewModel ticketViewModel)
 		{
-
 			if (id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -160,7 +200,6 @@ namespace TicketingSystem.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult Delete(int? id, TicketDeleteViewModel ticketViewModel)
 		{
-
 			if (id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -178,45 +217,6 @@ namespace TicketingSystem.Web.Controllers
 			this.Data.SaveChanges();
 
 			return this.RedirectToAction("ListAll", "Tickets");
-		}
-
-		[AllowAnonymous]
-		public ActionResult Details(int? id)
-		{
-			if (id == null)
-			{
-				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-			}
-
-			var ticketId = id.GetValueOrDefault();
-			var ticket = this.Data.Tickets.GetById(ticketId);
-
-			if (ticket == null)
-			{
-				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-			}
-
-			var ticketViewModel = new TicketDetailsViewModel()
-			{
-				AuthorName = ticket.Author.UserName,
-				CategoryName = ticket.Category.Name,
-				Description = ticket.Description,
-				Priority = ticket.Priority,
-				ScreenshotUrl = ticket.ScreenshotUrl,
-				Title = ticket.Title,
-				Id = ticket.Id
-			};
-
-			ticketViewModel.Comments = ticket.Comments.Select(c => new CommentViewModel()
-			{
-				Id = c.Id,
-				UserName = c.User.UserName,
-				Content = c.Content,
-				TicketId = c.Ticket.Id
-			}).ToList();
-
-
-			return this.View(ticketViewModel);
 		}
 
 		[HttpPost]
@@ -276,28 +276,28 @@ namespace TicketingSystem.Web.Controllers
 			if (categoryId >= 0)
 			{
 				return this.Data.Tickets.All().Where(t => t.CategoryId == categoryId).OrderByDescending(t => t.Id)
-				.Select(t => new TicketSummaryViewModel
-				{
-					Id = t.Id,
-					Title = t.Title,
-					CategoryName = t.Category.Name,
-					AuthorName = t.Author.UserName,
-					Priority = t.Priority,
-					CommentsCount = t.Comments.Count
-				});
+						   .Select(t => new TicketSummaryViewModel
+								  {
+									  Id = t.Id,
+									  Title = t.Title,
+									  CategoryName = t.Category.Name,
+									  AuthorName = t.Author.UserName,
+									  Priority = t.Priority,
+									  CommentsCount = t.Comments.Count
+								  });
 			}
 			else
 			{
 				return this.Data.Tickets.All().OrderByDescending(t => t.Id)
-					.Select(t => new TicketSummaryViewModel
-						{
-							Id = t.Id,
-							Title = t.Title,
-							CategoryName = t.Category.Name,
-							AuthorName = t.Author.UserName,
-							Priority = t.Priority,
-							CommentsCount = t.Comments.Count
-						});
+						   .Select(t => new TicketSummaryViewModel
+								  {
+									  Id = t.Id,
+									  Title = t.Title,
+									  CategoryName = t.Category.Name,
+									  AuthorName = t.Author.UserName,
+									  Priority = t.Priority,
+									  CommentsCount = t.Comments.Count
+								  });
 			}
 		}
 
@@ -321,7 +321,6 @@ namespace TicketingSystem.Web.Controllers
 		{
 			this.ViewBag.Priorities = from TicketPriority p in Enum.GetValues(typeof(TicketPriority))
 									  select new SelectListItem { Value = p.ToString(), Text = p.ToString() };
-
 		}
 	}
 }

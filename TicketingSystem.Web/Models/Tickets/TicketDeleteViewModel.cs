@@ -2,9 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using TicketingSystem.Models;
-using TicketingSystem.Web.Attributes;
 
-namespace TicketingSystem.Web.Models
+namespace TicketingSystem.Web.Models.Tickets
 {
 	public class TicketDeleteViewModel
 	{

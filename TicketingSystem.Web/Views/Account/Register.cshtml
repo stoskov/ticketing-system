@@ -1,4 +1,4 @@
-@model TicketingSystem.Web.Models.RegisterViewModel
+@model TicketingSystem.Web.Models.Accounts.RegisterViewModel
 @{
     ViewBag.Title = "Register";
 }
@@ -11,7 +11,7 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
-    
+
     <fieldset class="form-horizontal">
         <legend>Create a new account.</legend>
         <div class="control-group">

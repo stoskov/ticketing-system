@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using TicketingSystem.Models;
 
-namespace TicketingSystem.Web.Models
+namespace TicketingSystem.Web.Models.Tickets
 {
 	public class TicketSummaryViewModel
 	{

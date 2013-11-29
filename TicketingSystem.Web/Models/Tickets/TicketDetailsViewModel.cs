@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using TicketingSystem.Models;
+using TicketingSystem.Web.Models.Comments;
 
-namespace TicketingSystem.Web.Models
+namespace TicketingSystem.Web.Models.Tickets
 {
 	public class TicketDetailsViewModel
 	{

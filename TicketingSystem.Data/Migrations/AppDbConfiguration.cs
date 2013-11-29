@@ -31,7 +31,7 @@ namespace TicketingSystem.Data.Migrations
 					Name = "Category No:" + i.ToString() + "<script>alert('Hack!')</script>"
 				};
 
-				var ticketsCount = rand.Next(5, 50);
+				var ticketsCount = rand.Next(1, 20);
 				for (int j = 0; j < ticketsCount; j++)
 				{
 					var ticket = new Ticket()
@@ -43,7 +43,7 @@ namespace TicketingSystem.Data.Migrations
 						ScreenshotUrl = "http://telerikacademy.com/Content/Images/news-img01.png"
 					};
 
-					var commentsCount = rand.Next(15, 100);
+					var commentsCount = rand.Next(0, 20);
 					for (int k = 0; k < commentsCount; k++)
 					{
 						var comment = new Comment()

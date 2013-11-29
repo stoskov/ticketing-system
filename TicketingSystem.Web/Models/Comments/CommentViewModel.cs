@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-namespace TicketingSystem.Web.Models
+
+namespace TicketingSystem.Web.Models.Comments
 {
 	public class CommentViewModel
 	{

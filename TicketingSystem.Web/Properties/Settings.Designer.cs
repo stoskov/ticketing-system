@@ -25,10 +25,19 @@ namespace TicketingSystem.Web.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6")]
         public int HomePageTicketsNumber {
             get {
                 return ((int)(this["HomePageTicketsNumber"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6")]
+        public int HomePageCategoryNumber {
+            get {
+                return ((int)(this["HomePageCategoryNumber"]));
             }
         }
     }

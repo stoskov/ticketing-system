@@ -1,6 +1,6 @@
-﻿@model IEnumerable<TicketSummaryViewModel>
-@using TicketingSystem.Web.Helpers
+﻿@using TicketingSystem.Web.Models.Categories;
 
+@model IEnumerable<CategorySummaryViewModel>
 @{
     this.ViewBag.Title = "Ticketing System - Home";
 }
@@ -10,41 +10,34 @@
 
 @for (int i = 0; i < this.Model.Count(); i++)
 {
-	var ticket = this.Model.ElementAt(i);
+    var category = this.Model.ElementAt(i);
 
     if (i < this.Model.Count() && i % 3 == 0)
     {
     @:<div class="row-fluid">
-	}
+    }
     
         <div class="span4 page-index">
             <h4>
-                <a href="@this.Url.Action("Details", "Tickets", new { id = ticket.Id })">
-                    @ticket.Title
+                <a href="@this.Url.Action("Details", "Categories", new { id = category.Id })">
+                    @category.Name
                 </a>
             </h4>
-            <div>
-                <span class="label thiny">Category</span>
-                <span>@ticket.CategoryName</span>
-            </div>
-            <div>
-                <span class="label thiny">Author</span>
-                <span>@ticket.AuthorName</span>
-            </div>
-            <div>
-                <span class="label thiny">Priority</span>
-                <span>@ticket.Priority</span>
-            </div>
-            <div>
-                <span class="label thiny">Status</span>
-                <span>@ticket.Status</span>
-            </div>
-            <div>
-                <span class="label thiny">Comments</span>
-                <span>@ticket.CommentsCount</span>
-			</div>
-    
-		</div>
+            <em class="muted block">(@category.Tickets.Count() tickets)</em>
+            <ul>
+                @for (int j = 0; j < category.Tickets.Count(); j++)
+                {
+                    var ticket = category.Tickets[j];
+                    <li>
+                        <a href="@this.Url.Action("Details", "Tickets", new { id = ticket.Id })">
+                            @category.Name
+                        </a>
+                        <em class="muted block">(@ticket.CommentsCount comments)</em>
+                    </li>
+                }
+            </ul>
+
+        </div>
     
         if ((i > 0 && (i + 1) % 3 == 0) || i == this.Model.Count() - 1)
         {

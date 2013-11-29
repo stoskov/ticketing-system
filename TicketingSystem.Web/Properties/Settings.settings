@@ -3,7 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="HomePageTicketsNumber" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">3</Value>
+      <Value Profile="(Default)">6</Value>
+    </Setting>
+    <Setting Name="HomePageCategoryNumber" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">6</Value>
     </Setting>
   </Settings>
 </SettingsFile>
