@@ -3,19 +3,12 @@
 	padding-bottom: 40px;
 }
 
-.clear:after {
-	content: "";
-	display: block;
-	clear: both;
-}
-
 a:hover {
 	text-decoration: none;
 }
 
-/* styles for removing the background from form */
 .no-color {
-	background-color: white;
+	background-color: #fff;
 	border-style: none;
 }
 
@@ -47,7 +40,7 @@ ul li {
 	padding: 5px;
 }
 
-.post-ticket-comment-form > textarea {
+.ticket-form.post-ticket-comment-form > textarea {
 	margin: 0;
 	width: 100%;
 	box-sizing: border-box;
@@ -56,6 +49,27 @@ ul li {
 .ticket-comment:hover {
 	background: #eee;
 }
+
+.ticket-form.form-horizontal input:not([type=submit]),
+.ticket-form.form-horizontal textarea,
+.ticket-form.form-horizontal select {
+	width: 100%;
+}
+
+.ticket-form.form-horizontal textarea,
+.ticket-form.form-horizontal input:not([type=submit]) {
+	box-sizing: border-box;
+	height: auto;
+}
+
+.ticket-actions {
+	float: right;
+}
+
+	.ticket-actions > .btn {
+		margin-top: 20px;
+		margin-left: 10px;
+	}
 
 .separator {
 	margin: 10px 0;
@@ -86,8 +100,7 @@ ul li {
 
 	.gridview td, th {
 		padding: 5px 7px 5px 7px;
-		border-style: dotted;
-		border-color: #BBB;
+		border: 1px solid #bbb;
 	}
 
 	.gridview th {

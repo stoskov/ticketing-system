@@ -45,6 +45,7 @@ namespace TicketingSystem.Models
 		public Ticket()
 		{
 			this.Priority = TicketPriority.Medium;
+			this.Status = TicketStatus.New;
 			this.comments = new HashSet<Comment>();
 		}
 	}

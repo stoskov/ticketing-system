@@ -1,6 +1,6 @@
 ﻿@using TicketingSystem.Web.Models.Tickets;
 
-@model TicketDeleteViewModel
+@model TicketDetailsViewModel
 
 @{
     ViewBag.Title = "Delete";
@@ -9,49 +9,59 @@
 <h2>Delete</h2>
 
 <h3>Are you sure you want to delete this?</h3>
-<fieldset>
-    <legend>TicketCreateUpdateViewModel</legend>
 
-    <dl>
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
+<div class="row-fluid">
+    <header>
+        <p class="ticket-title">@this.Model.Title</p>
 
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
+    </header>
+</div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ScreenshotUrl)
-        </dt>
+<div class="row-fluid">
+    <div class="span4">
+        <p>
+            <strong>Category:</strong>
+            <span class="ticket-info">
+                <a href="@this.Url.Action("Details", "Categories", new { id = this.Model.CategoryId })">
+                    @this.Model.CategoryName
+                </a>
+            </span>
+        </p>
+        <p>
+            <strong>Priority:</strong>
+            <span class="ticket-info">@this.Model.Priority</span>
+        </p>
+        <p>
+            <strong>Status:</strong>
+            <span class="ticket-info">@this.Model.Status</span>
+        </p>
 
-        <dd>
-            @Html.DisplayFor(model => model.ScreenshotUrl)
-        </dd>
+        <p>
+            <strong>Open by:</strong>
+            <span class="ticket-info">@this.Model.AuthorName</span>
+        </p>
+    </div>
+    <div class="span8 clearfix">
+        <img class="ticket-image" width="200" height="200" src="@this.Model.ScreenshotUrl" alt="Ticket Screenshot" />
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
+</div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
+<div class="row-fluid separator">
+    <strong>Description:</strong>
+</div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CategoryId)
-        </dt>
+<div class="row-fluid">
+    <p class="span12 ticket-description">
+        @this.Model.Description
+    </p>
+</div>
 
-        <dd>
-            @Html.DisplayFor(model => model.CategoryId)
-        </dd>
 
-    </dl>
-</fieldset>
-@using (Html.BeginForm()) {
+
+@using (Html.BeginForm())
+{
     @Html.AntiForgeryToken()
 
-    <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn" /> |
-        @Html.ActionLink("Back to List", "Index")
-    </div>
+    <input type="submit" value="Delete" class="btn btn-danger" />
 }

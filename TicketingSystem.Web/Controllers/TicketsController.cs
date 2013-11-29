@@ -13,10 +13,24 @@ namespace TicketingSystem.Web.Controllers
 	[Authorize]
 	public class TicketsController : BaseController
 	{
-		private const int PageSize = 5;
+		[AllowAnonymous]
+		public ActionResult Index(TicketFilter ticketFilter)
+		{
+			int categoryId = ticketFilter.CategoryId.GetValueOrDefault(-1);
+
+			this.GetCategoriesList(true);
+
+			var page = 1;
+			var data = this.GetAllTickets(categoryId).Skip((page - 1) * Properties.Settings.Default.TicketsPageSize).Take(Properties.Settings.Default.TicketsPageSize);
+
+			this.ViewBag.Pages = Math.Ceiling((double)this.GetAllTickets(categoryId).Count() / Properties.Settings.Default.TicketsPageSize);
+			this.ViewBag.Filter = ticketFilter;
+
+			return this.View(data);
+		}
 
 		[AllowAnonymous]
-		public ActionResult Details(int? id)
+		public ActionResult Details(int? id, int? commentsPage)
 		{
 			if (id == null)
 			{
@@ -45,13 +59,7 @@ namespace TicketingSystem.Web.Controllers
 				CommentsCount = ticket.Comments.Count
 			};
 
-			var commentsPageString = this.Request.QueryString["commentsPage"];
-			var commentsPage = 1;
-
-			if (!string.IsNullOrEmpty(commentsPageString) && !int.TryParse(commentsPageString, out commentsPage))
-			{
-				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-			}
+			var commentsPageIndex = commentsPage.GetValueOrDefault(1);
 
 			ticketViewModel.Comments = ticket.Comments
 											 .Select(c => new CommentDetailsViewModel()
@@ -63,11 +71,11 @@ namespace TicketingSystem.Web.Controllers
 														TicketId = c.Ticket.Id
 													})
 											 .OrderByDescending(c => c.PostDate)
-											 .Skip((commentsPage - 1) * Properties.Settings.Default.TicketPageCommentsPageSize)
+											 .Skip((commentsPageIndex - 1) * Properties.Settings.Default.TicketPageCommentsPageSize)
 											 .Take(Properties.Settings.Default.TicketPageCommentsPageSize)
 											 .ToList();
 
-			this.ViewBag.CurrentPage = commentsPage;
+			this.ViewBag.CurrentPage = commentsPageIndex;
 			this.ViewBag.PagesCount = (int)Math.Ceiling((double)ticket.Comments.Count / Properties.Settings.Default.TicketPageCommentsPageSize);
 
 			return this.View(ticketViewModel);
@@ -76,9 +84,7 @@ namespace TicketingSystem.Web.Controllers
 		[HttpGet]
 		public ActionResult Create()
 		{
-			this.FillCategoriesList();
-			this.FillPrioritiesList();
-
+			this.SetLists();
 			var ticket = new TicketCreateUpdateViewModel();
 
 			return this.View(ticket);
@@ -90,8 +96,8 @@ namespace TicketingSystem.Web.Controllers
 		{
 			if (!this.ModelState.IsValid)
 			{
-				this.FillCategoriesList();
-				this.FillPrioritiesList();
+				SetLists();
+
 				return this.View(ticketViewModel);
 			}
 
@@ -113,9 +119,9 @@ namespace TicketingSystem.Web.Controllers
 			this.Data.Tickets.Add(ticket);
 			this.Data.SaveChanges();
 
-			return this.RedirectToAction("ListAll", "Tickets");
+			return this.RedirectToAction("Index");
 		}
-
+  
 		[HttpGet]
 		public ActionResult Edit(int? id)
 		{
@@ -137,16 +143,16 @@ namespace TicketingSystem.Web.Controllers
 				CategoryId = ticket.CategoryId,
 				Description = ticket.Description,
 				Priority = ticket.Priority,
+				Status = ticket.Status,
 				ScreenshotUrl = ticket.ScreenshotUrl,
 				Title = ticket.Title
 			};
 
-			this.FillCategoriesList();
-			this.FillPrioritiesList();
+			this.SetLists();
 
 			return this.View(ticketViewModel);
 		}
-
+  
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Edit(int? id, TicketCreateUpdateViewModel ticketViewModel)
@@ -166,8 +172,8 @@ namespace TicketingSystem.Web.Controllers
 
 			if (!this.ModelState.IsValid)
 			{
-				this.FillCategoriesList();
-				this.FillPrioritiesList();
+				this.SetLists();
+
 				return this.View(ticketViewModel);
 			}
 
@@ -180,9 +186,9 @@ namespace TicketingSystem.Web.Controllers
 			this.Data.Tickets.Update(ticket);
 			this.Data.SaveChanges();
 
-			return this.RedirectToAction("ListAll", "Tickets");
+			return this.RedirectToAction("Index", "Tickets");
 		}
-
+  
 		[HttpGet]
 		public ActionResult Delete(int? id)
 		{
@@ -199,24 +205,26 @@ namespace TicketingSystem.Web.Controllers
 				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
 			}
 
-			var ticketViewModel = new TicketDeleteViewModel()
+			var ticketViewModel = new TicketDetailsViewModel()
 			{
-				CategoryId = ticket.CategoryId,
+				AuthorName = ticket.Author.UserName,
+				CategoryName = ticket.Category.Name,
+				CategoryId = ticket.Category.Id,
 				Description = ticket.Description,
 				Priority = ticket.Priority,
+				Status = ticket.Status,
 				ScreenshotUrl = ticket.ScreenshotUrl,
-				Title = ticket.Title
+				Title = ticket.Title,
+				Id = ticket.Id,
+				CommentsCount = ticket.Comments.Count
 			};
-
-			this.FillCategoriesList();
-			this.FillPrioritiesList();
 
 			return this.View(ticketViewModel);
 		}
-
+  
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Delete(int? id, TicketDeleteViewModel ticketViewModel)
+		public ActionResult Delete(int? id, TicketDetailsViewModel ticketViewModel)
 		{
 			if (id == null)
 			{
@@ -234,9 +242,9 @@ namespace TicketingSystem.Web.Controllers
 			this.Data.Tickets.Delete(ticket);
 			this.Data.SaveChanges();
 
-			return this.RedirectToAction("ListAll", "Tickets");
+			return this.RedirectToAction("Index", "Tickets");
 		}
-
+  
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult PostComment(CommentDetailsViewModel commentViewModel)
@@ -269,31 +277,14 @@ namespace TicketingSystem.Web.Controllers
 
 			return this.RedirectToAction("Details", new { Id = comment.TicketId });
 		}
-
-		public ActionResult ListAll(int? id, string categoryFilter)
-		{
-			int categoryId;
-
-			if (string.IsNullOrEmpty(categoryFilter) || !int.TryParse(categoryFilter, out categoryId))
-			{
-				categoryId = -1;
-			}
-
-			this.FillCategoriesList(true);
-
-			var page = id.GetValueOrDefault(1);
-			var data = this.GetAllTickets(categoryId).Skip((page - 1) * PageSize).Take(PageSize);
-
-			this.ViewBag.Pages = Math.Ceiling((double)this.GetAllTickets(categoryId).Count() / PageSize);
-
-			return this.View(data);
-		}
-
+  
 		private IQueryable<TicketSummaryViewModel> GetAllTickets(int categoryId)
 		{
 			if (categoryId >= 0)
 			{
-				return this.Data.Tickets.All().Where(t => t.CategoryId == categoryId).OrderByDescending(t => t.Id)
+				return this.Data.Tickets.All()
+						   .Where(t => t.CategoryId == categoryId)
+						   .OrderByDescending(t => t.Id)
 						   .Select(t => new TicketSummaryViewModel
 								  {
 									  Id = t.Id,
@@ -306,7 +297,8 @@ namespace TicketingSystem.Web.Controllers
 			}
 			else
 			{
-				return this.Data.Tickets.All().OrderByDescending(t => t.Id)
+				return this.Data.Tickets.All()
+						   .OrderByDescending(t => t.Id)
 						   .Select(t => new TicketSummaryViewModel
 								  {
 									  Id = t.Id,
@@ -318,10 +310,17 @@ namespace TicketingSystem.Web.Controllers
 								  });
 			}
 		}
-
-		private void FillCategoriesList(bool withEmptyValue = false)
+  
+		private List<SelectListItem> GetCategoriesList(bool withEmptyValue = false)
 		{
-			List<SelectListItem> categories = this.Data.Categories.All().ToList().Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() }).ToList();
+			List<SelectListItem> categories = this.Data.Categories.All()
+												  .ToList()
+												  .Select(c => new SelectListItem
+														 {
+															 Text = c.Name,
+															 Value = c.Id.ToString()
+														 })
+												  .ToList();
 
 			var categoriesList = new List<SelectListItem>();
 
@@ -332,13 +331,39 @@ namespace TicketingSystem.Web.Controllers
 			}
 
 			categoriesList.AddRange(categories);
-			this.ViewBag.Categories = categoriesList;
+
+			return categoriesList;
+		}
+  
+		private List<SelectListItem> GetPrioritiesList()
+		{
+			var priorities = from TicketPriority p in Enum.GetValues(typeof(TicketPriority))
+							 select new SelectListItem
+							 {
+								 Value = p.ToString(),
+								 Text = p.ToString()
+							 };
+
+			return priorities.ToList();
 		}
 
-		private void FillPrioritiesList()
+		private List<SelectListItem> GetStatusesList()
 		{
-			this.ViewBag.Priorities = from TicketPriority p in Enum.GetValues(typeof(TicketPriority))
-									  select new SelectListItem { Value = p.ToString(), Text = p.ToString() };
+			var statuses = from TicketStatus p in Enum.GetValues(typeof(TicketStatus))
+						   select new SelectListItem
+						   {
+							   Value = p.ToString(),
+							   Text = p.ToString()
+						   };
+
+			return statuses.ToList();
+		}
+  
+		private void SetLists()
+		{
+			ViewBag.CategoriesList = this.GetCategoriesList();
+			ViewBag.StatusesList = this.GetStatusesList();
+			ViewBag.PrioritiesList = this.GetPrioritiesList();
 		}
 	}
 }

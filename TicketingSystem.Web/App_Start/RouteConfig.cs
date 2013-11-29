@@ -12,6 +12,11 @@ namespace TicketingSystem.Web
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
 			routes.MapRoute(
+				name: "AllTickets",
+				url: "Tickets",
+				defaults: new { controller = "Tickets", action = "Index", id = UrlParameter.Optional });
+
+			routes.MapRoute(
 				name: "Comments",
 				url: "Comments/{action}/{id}",
 				defaults: new { controller = "Comments", action = "Index", id = UrlParameter.Optional });

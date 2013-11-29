@@ -49,5 +49,14 @@ namespace TicketingSystem.Web.Properties {
                 return ((int)(this["TicketPageCommentsPageSize"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int TicketsPageSize {
+            get {
+                return ((int)(this["TicketsPageSize"]));
+            }
+        }
     }
 }

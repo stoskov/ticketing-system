@@ -3,12 +3,21 @@
     this.ViewBag.Title = "Ticketing Details";
 }
 
-<h2>Ticket Details</h2>
+<div class="row-fluid">
+    <div class="span10">
+        <h2>Ticket Details</h2>
+    </div>
+    <div class="span2">
+        <div class="ticket-actions clearfix">
+            <a class="btn btn-info" href='@Url.Action("Edit", new {id=this.Model.Id})'>Edit</a>
+            <a class="btn btn-danger" href='@Url.Action("Delete", new {id=this.Model.Id})'>Delete</a>
+        </div>
+    </div>
+</div>
 
 <div class="row-fluid">
     <header>
         <p class="ticket-title">@this.Model.Title</p>
-
     </header>
 </div>
 
@@ -36,7 +45,7 @@
             <span class="ticket-info">@this.Model.AuthorName</span>
         </p>
     </div>
-    <div class="span8 clear">
+    <div class="span8 clearfix">
         <img class="ticket-image" width="200" height="200" src="@this.Model.ScreenshotUrl" alt="Ticket Screenshot" />
     </div>
 
