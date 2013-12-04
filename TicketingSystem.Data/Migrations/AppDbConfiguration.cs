@@ -22,10 +22,10 @@ namespace TicketingSystem.Data.Migrations
 
 			Random rand = new Random();
 
-			var user = new AppUser("Customer");
-
 			for (int i = 0; i < 15; i++)
 			{
+				var user = new AppUser("Customer" + rand.Next(1, 100));
+
 				var category = new Category()
 				{
 					Name = "Category No:" + i.ToString() + "<script>alert('Hack!')</script>"
@@ -40,7 +40,9 @@ namespace TicketingSystem.Data.Migrations
 						Category = category,
 						Description = "Ticket description. Ticket description. Ticket description. Ticket description. Ticket description. <script>alert('Hack!')</script>",
 						Title = "Ticket title No:" + j.ToString() + " - " + category.Name + "<script>alert('Hack!')</script>",
-						ScreenshotUrl = "http://telerikacademy.com/Content/Images/news-img01.png"
+						ScreenshotUrl = "http://telerikacademy.com/Content/Images/news-img01.png",
+						Status = (TicketStatus)(rand.Next(0, 4)),
+						Priority = (TicketPriority)(rand.Next(0, 3))
 					};
 
 					var commentsCount = rand.Next(0, 20);

@@ -1,39 +1,66 @@
-﻿@using TicketingSystem.Web.Models.Tickets;
+﻿@using System.Web.Mvc.Html;
 
-@model IEnumerable<TicketSummaryViewModel>
+@model TicketsSummaryContainer
 
 @{
     this.ViewBag.Title = "All Tickets";
 }
 
-<h2>All Tickets</h2>
+<div class="row-fluid">
+    <div class="span12">
+        <h2>All Tickets</h2>
+    </div>
+</div>
 
-<table class="gridview">
-    <tr>
-        <th>
-            @this.Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @this.Html.DisplayNameFor(model => model.CategoryName)
-            <div class="ticket-filter">
-                @Html.DropDownList("categoryFilter",
-                    new SelectList((IEnumerable<SelectListItem>)ViewBag.Categories,
-                        "Value", "Text", this.ViewBag.Filter.CategoryId))
-            </div>
-        </th>
-        <th>
-            @this.Html.DisplayNameFor(model => model.AuthorName)
-        </th>
-        <th>
-            @this.Html.DisplayNameFor(model => model.Priority)
-        </th>
-        <th>
-            @this.Html.DisplayNameFor(model => model.Status)
-        </th>
-    </tr>
+<div class="row-fluid">
+    <div class="ticket-filter input-append span10">
+        <input class="span11" id="q" type="text" value='@this.Model.Filter.Q'>
+        <button class="btn btn-primary" id="q-button" type="button">Search</button>
+    </div>
+    <div class="span2">
+        <div class="ticket-actions clearfix">
+            <a class="btn btn-primary" href='@Url.Action("Index")'>Clear filters</a>
+        </div>
+    </div>
+</div>
 
-    @foreach (var item in this.Model)
-    {
+<div class="row-fluid">
+    <table class="gridview">
+        <tr>
+            <th class="filter ticket-header">
+                @this.Html.DisplayNameFor(model => ((TicketSummaryViewModel)model.TicketsList).Title)
+                <div class="ticket-filter">
+                    @Html.DropDownList("Title", new SelectList(this.Model.TitlesList, "Value", "Text", this.Model.Filter.Title))
+                </div>
+            </th>
+            <th class="filter ticket-header">
+                @this.Html.DisplayNameFor(model => ((TicketSummaryViewModel)model.TicketsList).CategoryName)
+                <div class="ticket-filter">
+                    @Html.DropDownList("CategoryId", new SelectList(this.Model.CategoriesList, "Value", "Text", this.Model.Filter.CategoryId))
+                </div>
+            </th>
+            <th class="filter ticket-header">
+                @this.Html.DisplayNameFor(model => ((TicketSummaryViewModel)model.TicketsList).AuthorName)
+                <div class="ticket-filter">
+                    @Html.DropDownList("AuthorId", new SelectList(this.Model.AuthorsList, "Value", "Text", this.Model.Filter.AuthorId))
+                </div>
+            </th>
+            <th class="filter ticket-header">
+                @this.Html.DisplayNameFor(model => ((TicketSummaryViewModel)model.TicketsList).Priority)
+                <div class="ticket-filter">
+                    @Html.DropDownList("Priority", new SelectList(this.Model.PrioritiesList, "Value", "Text", this.Model.Filter.Priority))
+                </div>
+            </th>
+            <th class="filter ticket-header">
+                @this.Html.DisplayNameFor(model => ((TicketSummaryViewModel)model.TicketsList).Status)
+                <div class="ticket-filter">
+                    @Html.DropDownList("Status", new SelectList(this.Model.StatuesList, "Value", "Text", this.Model.Filter.Status))
+                </div>
+            </th>
+        </tr>
+
+        @foreach (var item in this.Model.TicketsList)
+        {
             <tr>
                 <td>
                     <a href='@Url.Action("Details", new { id = item.Id })'>
@@ -53,37 +80,68 @@
                     @this.Html.DisplayFor(modelItem => item.Status)
                 </td>
             </tr>
-    }
-</table>
-
-<div class="pagination">
-    <ul>
-        @for (int i = 1; i <= this.ViewBag.Pages; i++)
-        {
-                    <li> @this.Html.ActionLink(i.ToString(), "ListAll", new { id = i, category = 1 }) </li>
         }
-    </ul>
+    </table>
+
+    <div class="row-fluid">
+        <span class="span2">Results: @this.Model.TicketsList.Count()</span>
+    </div>
+
+    <div class="pagination">
+        <ul>
+            @for (int i = 1; i <= this.ViewBag.Pages; i++)
+            {
+                <li> @this.Html.ActionLink(i.ToString(), "ListAll", new { id = i, category = 1 }) </li>
+            }
+        </ul>
+    </div>
 </div>
 
 @section scripts{
     <script type="text/javascript">
-        $(function () {
-            $("#categoryFilter").on("change", function (e) {
-                var category = e.target.value,
-                categoryIdRegex = /categoryId=[0-9]*/,
+        function setFilter(filter, value) {
+            var regex = new RegExp("(" + filter + "=[\\w\\W]*?)(&|$)", "i"),
                 queryString = window.location.search;
 
-                if (categoryIdRegex.test(queryString)) {
-                    queryString = queryString.replace(categoryIdRegex, "categoryId=" + category);
+            if (regex.test(queryString)) {
+                queryString = queryString.replace(regex, function (a, b, c) {
+                    return filter + "=" + value + c
+                });
+            }
+            else if (queryString.length > 1) {
+                queryString = queryString + "&" + filter + "=" + value;
+            }
+            else {
+                queryString = queryString + "?" + filter + "=" + value;
+            }
+
+            window.location.search = queryString;
+        }
+
+        $(function () {
+            $(".ticket-filter > select").on("change", function (e) {
+                var value = e.target.value,
+                    filter = e.target.id;
+
+                setFilter(filter, value);
+            });
+
+            $("#q-button").on("click", function () {
+                var element = $("#q")[0],
+                    value = element.value,
+                    filter = element.id;
+
+                setFilter(filter, value);
+            });
+
+            $("#q").on("keypress", function (e) {
+                var element = $("#q")[0],
+                    value = element.value,
+                    filter = element.id;
+
+                if (e.keyCode === 13) {
+                    setFilter(filter, value);
                 }
-                else if (queryString.length > 1) {
-                    queryString = queryString + "&categoryId=" + category;
-                }
-                else {
-                    queryString = queryString + "?categoryId=" + category;
-                }
-        
-                window.location.search = queryString;
             });
         });
     </script>

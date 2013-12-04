@@ -24,6 +24,8 @@ namespace TicketingSystem.Web.Models.Tickets
 		[Display(Name = "Status")]
 		public TicketStatus Status { get; set; }
 
+		public int SearchRelevance { get; set; }
+
 		public int CommentsCount { get; set; }
 	}
 }

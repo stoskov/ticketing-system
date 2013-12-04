@@ -71,6 +71,15 @@ ul li {
 		margin-left: 10px;
 	}
 
+
+.ticket-filter {
+	margin-top: 10px;
+}
+
+	.ticket-filter > select {
+		width: 100%;
+	}
+
 .separator {
 	margin: 10px 0;
 	border-bottom: 1px solid #999;

@@ -1,27 +1,24 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web.Mvc;
 using TicketingSystem.Models;
 
 namespace TicketingSystem.Web.Models.Tickets
 {
 	public class TicketFilter
 	{
-		public int Id { get; set; }
-
+		[AllowHtml]
 		public string Title { get; set; }
 
 		public int? CategoryId { get; set; }
 
-		[Display(Name = "Author")]
-		public string AuthorName { get; set; }
+		public string AuthorId { get; set; }
 
-		[Display(Name = "Priority")]
-		public TicketPriority Priority { get; set; }
-		
-		[Display(Name = "Status")]
-		public TicketStatus Status { get; set; }
+		public string Q { get; set; }
 
-		public int CommentsCount { get; set; }
+		public TicketPriority? Priority { get; set; }
+
+		public TicketStatus? Status { get; set; }
 	}
 }

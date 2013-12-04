@@ -5,6 +5,7 @@ using System.Net;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using TicketingSystem.Models;
+using TicketingSystem.Web.Helpers;
 using TicketingSystem.Web.Models.Comments;
 using TicketingSystem.Web.Models.Tickets;
 
@@ -14,19 +15,49 @@ namespace TicketingSystem.Web.Controllers
 	public class TicketsController : BaseController
 	{
 		[AllowAnonymous]
-		public ActionResult Index(TicketFilter ticketFilter)
+		public ActionResult Index(TicketFilter filter, int? page)
 		{
-			int categoryId = ticketFilter.CategoryId.GetValueOrDefault(-1);
+			var filteredTicketsList = this.ApplyFilter(filter);
+			var pageIndex = page.GetValueOrDefault(1);
+			var pagedTicketsList = filteredTicketsList
+													  .AsEnumerable()
+													  .Select(t => new TicketSummaryViewModel
+															 {
+																 Id = t.Id,
+																 Title = t.Title,
+																 CategoryName = t.Category.Name,
+																 AuthorName = t.Author.UserName,
+																 Priority = t.Priority,
+																 Status = t.Status,
+																 CommentsCount = t.Comments.Count,
+																 SearchRelevance = this.CalcualteRelevance(t, filter.Q)
+															 })
+													  .Where(t => t.SearchRelevance > 0)
+													  .OrderByDescending(t => t.SearchRelevance)
+													  .ThenByDescending(t => t.Id)
+													  .Skip((pageIndex - 1) * Properties.Settings.Default.TicketsPageSize)
+													  .Take(Properties.Settings.Default.TicketsPageSize);
 
-			this.GetCategoriesList(true);
+			var pagesCount = (int)Math.Ceiling((double)filteredTicketsList.Count() / Properties.Settings.Default.TicketsPageSize);
+			var categoriesList = this.GetFilterList(t => new SelectListItem { Value = t.CategoryId.ToString(), Text = t.Category.Name });
+			var prioritiesList = this.GetFilterList(t => new SelectListItem { Value = t.Priority.ToString(), Text = t.Priority.ToString() });
+			var statusesList = this.GetFilterList(t => new SelectListItem { Value = t.Status.ToString(), Text = t.Status.ToString() });
+			var authorsList = this.GetFilterList(t => new SelectListItem { Value = t.AuthorId.ToString(), Text = t.Author.UserName.ToString() });
+			var titlesList = this.GetFilterList(t => new SelectListItem { Value = t.Title.ToString(), Text = t.Title.ToString() });
 
-			var page = 1;
-			var data = this.GetAllTickets(categoryId).Skip((page - 1) * Properties.Settings.Default.TicketsPageSize).Take(Properties.Settings.Default.TicketsPageSize);
+			var viewModel = new TicketsSummaryContainer
+			{
+				TicketsList = pagedTicketsList,
+				Filter = filter,
+				PagesCount = pagesCount,
+				CategoriesList = categoriesList,
+				PrioritiesList = prioritiesList,
+				StatuesList = statusesList,
+				AuthorsList = authorsList,
+				TitlesList = titlesList
+			};
 
-			this.ViewBag.Pages = Math.Ceiling((double)this.GetAllTickets(categoryId).Count() / Properties.Settings.Default.TicketsPageSize);
-			this.ViewBag.Filter = ticketFilter;
-
-			return this.View(data);
+			return View(viewModel);
 		}
 
 		[AllowAnonymous]
@@ -121,7 +152,7 @@ namespace TicketingSystem.Web.Controllers
 
 			return this.RedirectToAction("Index");
 		}
-  
+
 		[HttpGet]
 		public ActionResult Edit(int? id)
 		{
@@ -152,7 +183,7 @@ namespace TicketingSystem.Web.Controllers
 
 			return this.View(ticketViewModel);
 		}
-  
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Edit(int? id, TicketCreateUpdateViewModel ticketViewModel)
@@ -186,9 +217,9 @@ namespace TicketingSystem.Web.Controllers
 			this.Data.Tickets.Update(ticket);
 			this.Data.SaveChanges();
 
-			return this.RedirectToAction("Index", "Tickets");
+			return this.RedirectToAction("Index");
 		}
-  
+
 		[HttpGet]
 		public ActionResult Delete(int? id)
 		{
@@ -221,7 +252,7 @@ namespace TicketingSystem.Web.Controllers
 
 			return this.View(ticketViewModel);
 		}
-  
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Delete(int? id, TicketDetailsViewModel ticketViewModel)
@@ -242,9 +273,9 @@ namespace TicketingSystem.Web.Controllers
 			this.Data.Tickets.Delete(ticket);
 			this.Data.SaveChanges();
 
-			return this.RedirectToAction("Index", "Tickets");
+			return this.RedirectToAction("Index");
 		}
-  
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult PostComment(CommentDetailsViewModel commentViewModel)
@@ -277,41 +308,8 @@ namespace TicketingSystem.Web.Controllers
 
 			return this.RedirectToAction("Details", new { Id = comment.TicketId });
 		}
-  
-		private IQueryable<TicketSummaryViewModel> GetAllTickets(int categoryId)
-		{
-			if (categoryId >= 0)
-			{
-				return this.Data.Tickets.All()
-						   .Where(t => t.CategoryId == categoryId)
-						   .OrderByDescending(t => t.Id)
-						   .Select(t => new TicketSummaryViewModel
-								  {
-									  Id = t.Id,
-									  Title = t.Title,
-									  CategoryName = t.Category.Name,
-									  AuthorName = t.Author.UserName,
-									  Priority = t.Priority,
-									  CommentsCount = t.Comments.Count
-								  });
-			}
-			else
-			{
-				return this.Data.Tickets.All()
-						   .OrderByDescending(t => t.Id)
-						   .Select(t => new TicketSummaryViewModel
-								  {
-									  Id = t.Id,
-									  Title = t.Title,
-									  CategoryName = t.Category.Name,
-									  AuthorName = t.Author.UserName,
-									  Priority = t.Priority,
-									  CommentsCount = t.Comments.Count
-								  });
-			}
-		}
-  
-		private List<SelectListItem> GetCategoriesList(bool withEmptyValue = false)
+
+		private IEnumerable<SelectListItem> GetCategoriesList(bool withEmptyValue = false)
 		{
 			List<SelectListItem> categories = this.Data.Categories.All()
 												  .ToList()
@@ -334,8 +332,8 @@ namespace TicketingSystem.Web.Controllers
 
 			return categoriesList;
 		}
-  
-		private List<SelectListItem> GetPrioritiesList()
+
+		private IEnumerable<SelectListItem> GetPrioritiesList()
 		{
 			var priorities = from TicketPriority p in Enum.GetValues(typeof(TicketPriority))
 							 select new SelectListItem
@@ -347,7 +345,7 @@ namespace TicketingSystem.Web.Controllers
 			return priorities.ToList();
 		}
 
-		private List<SelectListItem> GetStatusesList()
+		private IEnumerable<SelectListItem> GetStatusesList()
 		{
 			var statuses = from TicketStatus p in Enum.GetValues(typeof(TicketStatus))
 						   select new SelectListItem
@@ -358,12 +356,80 @@ namespace TicketingSystem.Web.Controllers
 
 			return statuses.ToList();
 		}
-  
+
 		private void SetLists()
 		{
 			ViewBag.CategoriesList = this.GetCategoriesList();
 			ViewBag.StatusesList = this.GetStatusesList();
 			ViewBag.PrioritiesList = this.GetPrioritiesList();
+		}
+
+		private IQueryable<Ticket> ApplyFilter(TicketFilter filter)
+		{
+			var filteredTicketsList = this.Data.Tickets.All();
+
+			if (filter.Title != null)
+			{
+				filteredTicketsList = filteredTicketsList.Where(t => t.Title == filter.Title);
+			}
+
+			if (filter.CategoryId != null)
+			{
+				filteredTicketsList = filteredTicketsList.Where(t => t.CategoryId == filter.CategoryId);
+			}
+
+			if (filter.AuthorId != null)
+			{
+				filteredTicketsList = filteredTicketsList.Where(t => t.AuthorId == filter.AuthorId);
+			}
+
+			if (filter.Priority != null)
+			{
+				filteredTicketsList = filteredTicketsList.Where(t => t.Priority == filter.Priority);
+			}
+
+			if (filter.Status != null)
+			{
+				filteredTicketsList = filteredTicketsList.Where(t => t.Status == filter.Status);
+			}
+
+			return filteredTicketsList;
+		}
+
+		private IEnumerable<SelectListItem> GetFilterList(Func<Ticket, SelectListItem> filter)
+		{
+			var filterList = this.Data.Tickets.All()
+								 .Select(filter)
+								 .Distinct(new SelectListItemComparer())
+								 .ToList();
+
+			var result = new List<SelectListItem>();
+			result.Add(new SelectListItem { Text = "", Value = "" });
+			result.AddRange(filterList);
+
+			return result;
+		}
+
+		private int CalcualteRelevance(Ticket ticket, string queryString)
+		{
+			if (string.IsNullOrEmpty(queryString))
+			{
+				return 1;
+			}
+
+			var relevance = 0;
+			var words = queryString.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			var searchTarget = string.Format("{0}{1}{2}{3}", ticket.Title, ticket.Author.UserName, ticket.Status.ToString(), ticket.Priority.ToString()).ToLower();
+
+			foreach (var word in words)
+			{
+				if (searchTarget.IndexOf(word.ToLower()) >= 0)
+				{
+					relevance++;
+				}
+			}
+
+			return relevance;
 		}
 	}
 }
