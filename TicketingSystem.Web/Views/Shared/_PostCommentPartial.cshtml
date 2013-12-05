@@ -10,7 +10,7 @@
         @Html.ValidationMessageFor(model => model.Content, null, new { @class = "help-inline" })
         @Html.AntiForgeryToken()
     </div>
-    <div class="controls-row">
+    <div class="controls-row clearfix">
         <input class="btn btn-primary right" type="submit" value="Post" />
     </div>
 }

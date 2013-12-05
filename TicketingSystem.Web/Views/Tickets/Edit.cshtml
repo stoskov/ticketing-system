@@ -4,70 +4,25 @@
     ViewBag.Title = "Edit Ticket";
 }
 
-<h2>Edit Ticket</h2>
+<h3>Edit Ticket</h3>
 
+<div class="page page-create-ticket">
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
 
-    <fieldset class="form-horizontal ticket-form">
+        <fieldset class="form-horizontal ticket-form">
 
-        <div class="control-group">
-            @Html.LabelFor(model => model.CategoryId, new { @class = "control-label" })
-            <div class="controls">
-                @Html.DropDownListFor(model => model.CategoryId, (IEnumerable<SelectListItem>)ViewBag.CategoriesList)
-                @Html.ValidationMessageFor(model => model.CategoryId, null, new { @class = "help-inline" })
+            @Html.Partial("_CreateUpdateTicket", this.Model)
+
+            <div class="controls-row clearfix">
+                <input type="submit" value="Save" class="btn btn-primary right" />
             </div>
-        </div>
+        </fieldset>
+    }
 
-        <div class="control-group">
-            @Html.LabelFor(model => model.Title, new { @class = "control-label" })
-            <div class="controls">
-                @Html.EditorFor(model => model.Title)
-                @Html.ValidationMessageFor(model => model.Title, null, new { @class = "help-inline" })
-            </div>
-        </div>
-
-        <div class="control-group">
-            @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-            <div class="controls">
-                @Html.DropDownListFor(model => model.Priority, (IEnumerable<SelectListItem>)ViewBag.PrioritiesList)
-                @Html.ValidationMessageFor(model => model.Priority, null, new { @class = "help-inline" })
-            </div>
-        </div>
-
-        <div class="control-group">
-            @Html.LabelFor(model => model.Status, new { @class = "control-label" })
-            <div class="controls">
-                @Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewBag.StatusesList)
-                @Html.ValidationMessageFor(model => model.Status, null, new { @class = "help-inline" })
-            </div>
-        </div>
-
-        <div class="control-group">
-            @Html.LabelFor(model => model.ScreenshotUrl, new { @class = "control-label" })
-            <div class="controls">
-                @Html.EditorFor(model => model.ScreenshotUrl)
-                @Html.ValidationMessageFor(model => model.ScreenshotUrl, null, new { @class = "help-inline" })
-            </div>
-        </div>
-
-        <div class="control-group">
-            @Html.LabelFor(model => model.Description, new { @class = "control-label" })
-            <div class="controls">
-                @Html.EditorFor(model => model.Description)
-                @Html.ValidationMessageFor(model => model.Description, null, new { @class = "help-inline" })
-            </div>
-        </div>
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Save" class="btn btn-primary" />
-        </div>
-    </fieldset>
-}
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
-
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+</div>

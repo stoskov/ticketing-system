@@ -271,6 +271,7 @@
     <Content Include="Views\Categories\Edit.cshtml" />
     <Content Include="Views\Categories\Index.cshtml" />
     <Content Include="Views\Shared\_TicketDetails.cshtml" />
+    <Content Include="Views\Shared\_CreateUpdateTicket.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
