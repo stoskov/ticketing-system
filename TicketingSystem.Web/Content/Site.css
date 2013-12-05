@@ -49,6 +49,10 @@ a:hover {
 	background-color: #ddd;
 }
 
+	.ticket-header .ticket-actions {
+		margin-top: 5px;
+	}
+
 .ticket-subheader {
 	margin: 10px 0;
 	padding: 5px;
@@ -58,45 +62,83 @@ a:hover {
 	background-color: #ddd;
 }
 
-	.ticket-header .ticket-actions {
-		margin-top: 5px;
-	}
-
 .ticket-details-wrap .ticket-title {
 	font-weight: bold;
 }
 
 .ticket-details-wrap {
 	position: relative;
-	margin: 5px 0;	
+	margin: 5px 0;
 }
 
-.ticket-details-wrap .ticket-info.header {
-	position: absolute;
-	width: 100px;
-	font-weight: bold;
-	display: inline-block;
-}
+	.ticket-details-wrap .ticket-info.header {
+		position: absolute;
+		width: 100px;
+		font-weight: bold;
+		display: inline-block;
+	}
 
-.ticket-details-wrap .ticket-info.content {
-	display: inline-block;
-	margin-left: 100px;
-	text-align: justify;
-}
+	.ticket-details-wrap .ticket-info.content {
+		display: inline-block;
+		margin-left: 100px;
+		text-align: justify;
+	}
 
 .comment-info-wrap {
 	padding: 5px;
 }
-.comment-info-wrap:hover {
+
+	.comment-info-wrap:hover {
+		background-color: #ddd;
+	}
+
+	.comment-info-wrap .comment-info.header {
+		font-weight: bold;
+	}
+
+	.comment-info-wrap .comment-info.content {
+		text-align: justify;
+	}
+
+.tickets-list-gridview select {
+	width: 100%;
+}
+
+.tickets-list-gridview .tickets-list.header {
+	padding: 5px;
 	background-color: #ddd;
+	border: 1px solid #ddd;
 }
 
-.comment-info-wrap .comment-info.header {
-	font-weight: bold;
+.tickets-list-gridview .tickets-list.header.title {
+	width: 600px;
 }
 
-.comment-info-wrap .comment-info.content {
-	text-align: justify;
+.tickets-list-gridview .tickets-list.header.category {
+	width: 300px;
+}
+
+.tickets-list-gridview .tickets-list.header.author,
+.tickets-list-gridview .tickets-list.header.status,
+.tickets-list-gridview .tickets-list.header.priority {
+	width: 90px;
+}
+
+.tickets-list-gridview .tickets-list.filter {
+	margin-top: 5px;
+}
+
+.tickets-list-gridview .tickets-list.content {
+	padding: 10px;
+	border: 1px solid #ddd;
+	vertical-align: central;
+	/*text-align: justify;*/
+}
+
+.tickets-list-gridview .tickets-list.content.author,
+.tickets-list-gridview .tickets-list.content.status,
+.tickets-list-gridview .tickets-list.content.priority {
+	text-align: center;
 }
 
 /*body {
