@@ -3,9 +3,10 @@
 @model CommentDetailsViewModel
 
 <div class="row-fluid">
-    <div class="span12 ticket-comment">
-        <span class="badge">@this.Model.PostDate.ToString()</span>
-        <strong>@this.Model.UserName:</strong>
-        <span>@this.Model.Content</span>
+    <div class="comment-info-wrap span12">
+        <div class="comment-info header">
+            @this.Model.PostDate.ToString() : @this.Model.UserName
+        </div>
+        <div class="comment-info content">@this.Model.Content</div>
     </div>
 </div>

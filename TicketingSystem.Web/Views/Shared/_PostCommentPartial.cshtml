@@ -2,20 +2,15 @@
 
 @model CommentDetailsViewModel
 
-@{
-    if (User.Identity.IsAuthenticated)
-    {
-        using (Html.BeginForm("PostComment", "Tickets"))
-        {
-            <div class="post-ticket-comment-form ticket-form">
-                @Html.EditorFor(m => m.Content)
-                @Html.Hidden("TicketId", Model.TicketId)
-                @Html.ValidationMessageFor(model => model.Content, null, new { @class = "help-inline" })
-                @Html.AntiForgeryToken()
-            </div>
-            <div>
-                <input class="btn btn-primary" type="submit" value="Post" />
-            </div>
-        }
-    }
+@using (Html.BeginForm("PostComment", "Tickets"))
+{
+    <div class="controls">
+        @Html.EditorFor(m => m.Content)
+        @Html.Hidden("TicketId", Model.TicketId)
+        @Html.ValidationMessageFor(model => model.Content, null, new { @class = "help-inline" })
+        @Html.AntiForgeryToken()
+    </div>
+    <div class="controls-row">
+        <input class="btn btn-primary right" type="submit" value="Post" />
+    </div>
 }

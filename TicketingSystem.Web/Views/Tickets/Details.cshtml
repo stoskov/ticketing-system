@@ -3,112 +3,117 @@
     this.ViewBag.Title = "Ticketing Details";
 }
 
-<div class="row-fluid">
-    <div class="span10">
-        <h2>Ticket Details</h2>
-    </div>
-    <div class="span2">
-        <div class="ticket-actions clearfix">
-            <a class="btn btn-info" href='@Url.Action("Edit", new {id=this.Model.Id})'>Edit</a>
-            <a class="btn btn-danger" href='@Url.Action("Delete", new {id=this.Model.Id})'>Delete</a>
+<h2>Ticket Details</h2>
+
+<div class="page page-create-ticket">
+
+    <div class="row-fluid ticket-header">
+        <div class="span10">
+            <header>
+                <h4 class="ticket-title">@this.Model.Title</h4>
+            </header>
+        </div>
+        <div class="span2">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="ticket-actions right clearfix">
+                    <a class="btn btn-info" href='@Url.Action("Edit", new {id=this.Model.Id})'>Edit</a>
+                    <a class="btn btn-danger" href='@Url.Action("Delete", new {id=this.Model.Id})'>Delete</a>
+                </div>
+            }
         </div>
     </div>
-</div>
 
-<div class="row-fluid">
-    <header>
-        <p class="ticket-title">@this.Model.Title</p>
-    </header>
-</div>
+    <div class="row-fluid separate">
+        <div class="span8">
+            <div class="ticket-details-wrap">
+                <span class="ticket-info header">Category:</span>
+                <span class="ticket-info content">
+                    <a href="@this.Url.Action("Details", "Categories", new { id = this.Model.CategoryId })">
+                        @this.Model.CategoryName
+                    </a>
+                </span>
+            </div>
+            <div class="ticket-details-wrap">
+                <span class="ticket-info header">Priority:</span>
+                <span class="ticket-info content">@this.Model.Priority</span>
+            </div>
+            <div class="ticket-details-wrap">
+                <span class="ticket-info header">Status:</span>
+                <span class="ticket-info content">@this.Model.Status</span>
+            </div>
 
-<div class="row-fluid">
-    <div class="span4">
-        <p>
-            <strong>Category:</strong>
-            <span class="ticket-info">
-                <a href="@this.Url.Action("Details", "Categories", new { id = this.Model.CategoryId })">
-                    @this.Model.CategoryName
-                </a>
-            </span>
-        </p>
-        <p>
-            <strong>Priority:</strong>
-            <span class="ticket-info">@this.Model.Priority</span>
-        </p>
-        <p>
-            <strong>Status:</strong>
-            <span class="ticket-info">@this.Model.Status</span>
-        </p>
-
-        <p>
-            <strong>Open by:</strong>
-            <span class="ticket-info">@this.Model.AuthorName</span>
-        </p>
-    </div>
-    <div class="span8 clearfix">
-        <img class="ticket-image" width="200" height="200" src="@this.Model.ScreenshotUrl" alt="Ticket Screenshot" />
+            <div class="ticket-details-wrap">
+                <span class="ticket-info header">Open by:</span>
+                <span class="ticket-info content">@this.Model.AuthorName</span>
+            </div>
+        </div>
+        <div class="span4 clearfix">
+            <img class="right" width="200" height="200" src="@this.Model.ScreenshotUrl" alt="Ticket Screenshot" />
+        </div>
     </div>
 
-</div>
-
-<div class="row-fluid separator">
-    <strong>Description:</strong>
-</div>
-
-<div class="row-fluid">
-    <p class="span12 ticket-description">
-        @this.Model.Description
-    </p>
-</div>
-
-<div class="row-fluid separator">
-    <strong>Comments(@this.Model.CommentsCount):</strong>
-</div>
-
-@foreach (CommentDetailsViewModel comment in this.Model.Comments)
-{
-    @Html.Partial("_CommentPartial", comment);
-}
-
-<div class="row-fluid">
-    <div class="pagination">
-        <ul>
-            @if (ViewBag.CurrentPage > 1)
-            {
-                <li>
-                    <a href='@Url.Action("Details", new { commentsPage = ViewBag.CurrentPage - 1 })'>Prev</a>
-                </li>
-            }
-            else
-            {
-                <li class="disabled">
-                    <a href='#'>Prev</a>
-                </li>
-            }
-
-            @if (ViewBag.CurrentPage < ViewBag.PagesCount)
-            {
-                <li>
-                    <a href='@Url.Action("Details", new { commentsPage = ViewBag.CurrentPage + 1 })'>Next</a>
-                </li>
-            }
-            else
-            {
-                <li class="disabled">
-                    <a href='#'>Next</a>
-                </li>
-            }
-
-        </ul>
+    <div class="row-fluid separate">
+        <div class="ticket-details-wrap span12">
+            <span class="ticket-info header">Description:</span>
+            <span class="ticket-info content">@this.Model.Description</span>
+        </div>
     </div>
-</div>
 
-<div class="row-fluid">
+    <div class="row-fluid separate ticket-subheader">
+        Comments(@this.Model.CommentsCount):
+    </div>
+
+    @foreach (CommentDetailsViewModel comment in this.Model.Comments)
+    {
+        @Html.Partial("_CommentPartial", comment);
+    }
 
     <div class="row-fluid">
-        @{
-            var commentViewMode = new CommentDetailsViewModel() { TicketId = this.Model.Id };
-            @Html.Partial("_PostCommentPartial", commentViewMode);
-        }
+        <div class="pagination">
+            <ul>
+                @if (ViewBag.CurrentPage > 1)
+                {
+                    <li>
+                        <a href='@Url.Action("Details", new { commentsPage = ViewBag.CurrentPage - 1 })'>Prev</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="disabled">
+                        <a href='#'>Prev</a>
+                    </li>
+                }
+
+                @if (ViewBag.CurrentPage < ViewBag.PagesCount)
+                {
+                    <li>
+                        <a href='@Url.Action("Details", new { commentsPage = ViewBag.CurrentPage + 1 })'>Next</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="disabled">
+                        <a href='#'>Next</a>
+                    </li>
+                }
+
+            </ul>
+        </div>
     </div>
+
+    @{
+        if (User.Identity.IsAuthenticated)
+        {
+            var commentViewMode = new CommentDetailsViewModel() { TicketId = this.Model.Id };
+
+            <div class="row-fluid separate ticket-subheader">
+                Leave a comment
+            </div>
+
+            <div class="row-fluid">
+                @Html.Partial("_PostCommentPartial", commentViewMode)
+            </div>
+        }
+    }
 </div>
