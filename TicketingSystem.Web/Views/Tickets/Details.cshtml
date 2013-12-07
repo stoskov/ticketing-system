@@ -3,7 +3,14 @@
     this.ViewBag.Title = "Ticketing Details";
 }
 
-<h2>Ticket Details</h2>
+<div class="row-fluid ticket-main-title-wrap">
+    <div class="span10">
+        <h3>Ticket Details</h3>
+    </div>
+    <div class="span2 clearfix ticket-actions">
+        <a class="right" href='@Url.Action("Index", "Home")'>Home</a>
+    </div>
+</div>
 
 <div class="page page-create-ticket">
 

@@ -176,7 +176,8 @@ namespace TicketingSystem.Web.Controllers
 				Priority = ticket.Priority,
 				Status = ticket.Status,
 				ScreenshotUrl = ticket.ScreenshotUrl,
-				Title = ticket.Title
+				Title = ticket.Title,
+				Id = ticket.Id
 			};
 
 			this.SetLists();
@@ -213,11 +214,12 @@ namespace TicketingSystem.Web.Controllers
 			ticket.Priority = ticketViewModel.Priority;
 			ticket.ScreenshotUrl = ticketViewModel.ScreenshotUrl;
 			ticket.Title = ticketViewModel.Title;
+			ticket.Status = ticketViewModel.Status;
 
 			this.Data.Tickets.Update(ticket);
 			this.Data.SaveChanges();
 
-			return this.RedirectToAction("Index");
+			return this.RedirectToAction("Details", new { Id = ticket.Id });
 		}
 
 		[HttpGet]
@@ -273,7 +275,7 @@ namespace TicketingSystem.Web.Controllers
 			this.Data.Tickets.Delete(ticket);
 			this.Data.SaveChanges();
 
-			return this.RedirectToAction("Index");
+			return this.RedirectToAction("Index", "Home");
 		}
 
 		[HttpPost]

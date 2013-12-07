@@ -62,6 +62,10 @@ a:hover {
 	background-color: #ddd;
 }
 
+.ticket-main-title-wrap .ticket-actions {
+	padding: 20px 10px;
+}
+
 .ticket-details-wrap .ticket-title {
 	font-weight: bold;
 }

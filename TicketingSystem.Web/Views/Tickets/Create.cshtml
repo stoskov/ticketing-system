@@ -4,7 +4,14 @@
     ViewBag.Title = "Add Ticket";
 }
 
-<h3>New Ticket</h3>
+<div class="row-fluid ticket-main-title-wrap">
+    <div class="span10">
+        <h3>New Ticket</h3>
+    </div>
+    <div class="span2 clearfix ticket-actions">
+        <a class="right" href='@Url.Action("Index", "Home")'>Home</a>
+    </div>
+</div>
 
 <div class="page page-create-ticket">
 
@@ -17,7 +24,10 @@
             @Html.Partial("_CreateUpdateTicket", this.Model)
 
             <div class="controls-row clearfix">
-                <input type="submit" value="Add Ticket" class="btn btn-primary right" />
+                <div class="right">
+                    <input type="submit" value="Add Ticket" class="btn btn-success" />
+                    <a class="btn btn-inverse" href='@Url.Action("Index", "Home")'>Cancel</a>
+                </div>
             </div>
         </fieldset>
     }
