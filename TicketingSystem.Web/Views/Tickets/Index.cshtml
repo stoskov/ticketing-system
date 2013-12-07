@@ -80,7 +80,7 @@
     </table>
 
     <div class="row-fluid">
-        <span class="span2">Results: @this.Model.TotalTicketsCount</span>
+        <span class="right">Results: @this.Model.TotalTicketsCount</span>
     </div>
 
     @Html.Paging(new PagingOptions { QueryParameterName = "page", LastPage = this.Model.PagesCount, wrapperClasses = "pagination-right" })
