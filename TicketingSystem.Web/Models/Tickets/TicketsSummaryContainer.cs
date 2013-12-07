@@ -24,5 +24,7 @@ namespace TicketingSystem.Web.Models.Tickets
 		public int PagesCount { get; set; }
 
 		public int CurrentPage { get; set; }
+
+		public int TotalTicketsCount { get; set; }
 	}
 }

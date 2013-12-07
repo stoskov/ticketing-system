@@ -25,38 +25,8 @@
         @Html.Partial("_CommentPartial", comment);
     }
 
-    <div class="row-fluid">
-        <div class="pagination">
-            <ul>
-                @if (ViewBag.CurrentPage > 1)
-                {
-                    <li>
-                        <a href='@Url.Action("Details", new { commentsPage = ViewBag.CurrentPage - 1 })'>Prev</a>
-                    </li>
-                }
-                else
-                {
-                    <li class="disabled">
-                        <a href='#'>Prev</a>
-                    </li>
-                }
 
-                @if (ViewBag.CurrentPage < ViewBag.PagesCount)
-                {
-                    <li>
-                        <a href='@Url.Action("Details", new { commentsPage = ViewBag.CurrentPage + 1 })'>Next</a>
-                    </li>
-                }
-                else
-                {
-                    <li class="disabled">
-                        <a href='#'>Next</a>
-                    </li>
-                }
-
-            </ul>
-        </div>
-    </div>
+    @Html.Paging(new PagingOptions { QueryParameterName = "commentsPage", LastPage = ViewBag.PagesCount, wrapperClasses = "pagination-right" })
 
     @{
         if (User.Identity.IsAuthenticated)

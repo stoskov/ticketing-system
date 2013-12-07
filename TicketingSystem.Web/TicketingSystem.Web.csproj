@@ -180,6 +180,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\PagingOptions.cs" />
     <Compile Include="Helpers\SelectListItemComparer.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Models\Accounts\ExternalLoginConfirmationViewModel.cs" />

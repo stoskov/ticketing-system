@@ -80,17 +80,11 @@
     </table>
 
     <div class="row-fluid">
-        <span class="span2">Results: @this.Model.TicketsList.Count()</span>
+        <span class="span2">Results: @this.Model.TotalTicketsCount</span>
     </div>
 
-    <div class="pagination">
-        <ul>
-            @for (int i = 1; i <= this.ViewBag.Pages; i++)
-            {
-                <li> @this.Html.ActionLink(i.ToString(), "ListAll", new { id = i, category = 1 }) </li>
-            }
-        </ul>
-    </div>
+    @Html.Paging(new PagingOptions { QueryParameterName = "page", LastPage = this.Model.PagesCount, wrapperClasses = "pagination-right" })
+
 </div>
 
 @section scripts{

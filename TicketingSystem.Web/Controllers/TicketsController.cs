@@ -50,6 +50,7 @@ namespace TicketingSystem.Web.Controllers
 				TicketsList = pagedTicketsList,
 				Filter = filter,
 				PagesCount = pagesCount,
+				TotalTicketsCount = filteredTicketsList.Count(),
 				CategoriesList = categoriesList,
 				PrioritiesList = prioritiesList,
 				StatuesList = statusesList,
