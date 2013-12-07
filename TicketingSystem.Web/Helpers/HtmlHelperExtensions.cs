@@ -34,19 +34,26 @@ namespace TicketingSystem.Web.Helpers
 			startingPage = Math.Max(startingPage, 1);
 
 			var maxPage = Math.Min(startingPage + options.NumberOfPages - 1, options.LastPage);
+			var prevPage = Math.Min(selectedPage + 1, options.LastPage);
+			var nextPage = Math.Max(selectedPage - 1, 1);
 
 			var pager = new TagBuilder("ul");
 
-			pager.InnerHtml += GetPageLink(helper, options.HasFirstButton, options.FirstButtonText, options.QueryParameterName, 1, selectedPage, "disabled");
-			pager.InnerHtml += GetPageLink(helper, options.HasPrevButton, options.PrevButtonText, options.QueryParameterName, Math.Max(selectedPage - 1, 1), selectedPage, "disabled");
+			pager.InnerHtml += GetPageLinkIfApplicable(options.HasFirstButton, options.FirstButtonText,
+				GetPagedUri(helper, options.QueryParameterName, 1), 1 == selectedPage, "disabled");
+			pager.InnerHtml += GetPageLinkIfApplicable(options.HasPrevButton, options.PrevButtonText,
+				GetPagedUri(helper, options.QueryParameterName, prevPage), prevPage == selectedPage, "disabled");
 
 			for (int i = startingPage; i <= maxPage; i++)
 			{
-				pager.InnerHtml += GetPageLink(helper, true, i.ToString(), options.QueryParameterName, i, selectedPage, "active");
+				pager.InnerHtml += GetPageLinkIfApplicable(true, i.ToString(),
+					GetPagedUri(helper, options.QueryParameterName, i), i == selectedPage, "active");
 			}
 
-			pager.InnerHtml += GetPageLink(helper, options.HasNextButton, options.NextButtonText, options.QueryParameterName, Math.Min(selectedPage + 1, options.LastPage), selectedPage, "disabled");
-			pager.InnerHtml += GetPageLink(helper, options.HasLastButton, options.LastButtonText, options.QueryParameterName, options.LastPage, selectedPage, "disabled");
+			pager.InnerHtml += GetPageLinkIfApplicable(options.HasNextButton, options.NextButtonText,
+				GetPagedUri(helper, options.QueryParameterName, nextPage), nextPage == selectedPage, "disabled");
+			pager.InnerHtml += GetPageLinkIfApplicable(options.HasLastButton, options.LastButtonText,
+				GetPagedUri(helper, options.QueryParameterName, options.LastPage), options.LastPage == selectedPage, "disabled");
 
 			wrapper.InnerHtml += pager.ToString();
 
@@ -59,26 +66,27 @@ namespace TicketingSystem.Web.Helpers
 			var currentPage = 0;
 
 			int.TryParse(currentPageString, out currentPage);
-			if (currentPage == 0)
-			{
-				currentPage = 1;
-			}
+			currentPage = Math.Max(currentPage, 1);
 
 			return currentPage;
 		}
 
-		private static string GetPageLink(HtmlHelper helper, bool shouldRender, string buttonText,
-			string queryParameterName, int page, int currentPage, string currentPageClass)
+		private static string GetPageLinkIfApplicable(bool isApplicable, string buttonText, string url, bool isCurrentPage, string currentPageClass)
 		{
-			if (!shouldRender)
+			if (!isApplicable)
 			{
 				return string.Empty;
 			}
 
+			return GetPageLink(buttonText, url, isCurrentPage, currentPageClass);
+		}
+
+		private static string GetPageLink(string buttonText, string url, bool isCurrentPage, string currentPageClass)
+		{
 			var pageTag = new TagBuilder("li");
 			TagBuilder innterTag;
 
-			if (page == currentPage)
+			if (isCurrentPage)
 			{
 				innterTag = new TagBuilder("span");
 				pageTag.AddCssClass(currentPageClass);
@@ -86,7 +94,7 @@ namespace TicketingSystem.Web.Helpers
 			else
 			{
 				innterTag = new TagBuilder("a");
-				innterTag.MergeAttribute("href", GetPagedUri(helper, queryParameterName, page));
+				innterTag.MergeAttribute("href", url);
 			}
 
 			innterTag.SetInnerText(buttonText);
@@ -104,7 +112,6 @@ namespace TicketingSystem.Web.Helpers
 
 			var uri = new UriBuilder();
 			uri.Host = currentUri.Host;
-			uri.Port = currentUri.Port;
 			uri.Path = currentUri.AbsolutePath;
 			uri.Query = query.ToString();
 
