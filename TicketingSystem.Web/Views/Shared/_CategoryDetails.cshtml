@@ -24,14 +24,14 @@
 @foreach (TicketSummaryViewModel ticket in this.Model.Tickets.TicketsList)
 {
     <div class="row-fluid">
-        <div class="comment-info-wrap span12">
-            <div class="comment-info header">
+        <a class="comment-info-wrap span12 block" href='@Url.Action("Details", "Tickets", new { Id = ticket.Id })'>
+            <span class="comment-info header">
                 Author: @ticket.AuthorName
                 Status: @ticket.Status
                 Priority: @ticket.Priority
-            </div>
-            <div class="comment-info content">@ticket.Title</div>
-        </div>
+            </span>
+            <span class="comment-info content block">@ticket.Title</span>
+        </a>
     </div>
 }
 
