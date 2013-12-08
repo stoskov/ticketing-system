@@ -20,13 +20,13 @@
         Comments(@this.Model.CommentsCount):
     </div>
 
-    @foreach (CommentDetailsViewModel comment in this.Model.Comments)
+    @foreach (CommentDetailsViewModel comment in this.Model.CommentsContainer.Comments)
     {
         @Html.Partial("_CommentPartial", comment);
     }
 
 
-    @Html.Paging(new PagingOptions { QueryParameterName = "commentsPage", LastPage = ViewBag.PagesCount, wrapperClasses = "pagination-right" })
+    @Html.Paging(new PagingOptions { QueryParameterName = "commentsPage", LastPage = this.Model.CommentsContainer.PagesCount, wrapperClasses = "pagination-right" })
 
     @{
         if (User.Identity.IsAuthenticated)

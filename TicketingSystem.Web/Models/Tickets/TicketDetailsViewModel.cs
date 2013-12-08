@@ -8,7 +8,7 @@ namespace TicketingSystem.Web.Models.Tickets
 {
 	public class TicketDetailsViewModel : TicketViewModel
 	{
-		public ICollection<CommentDetailsViewModel> Comments { get; set; }
+		public CommentPagebleViewModel CommentsContainer { get; set; }
 
 		public TicketsMetaDataViewModel MetaData { get; set; }
 	}

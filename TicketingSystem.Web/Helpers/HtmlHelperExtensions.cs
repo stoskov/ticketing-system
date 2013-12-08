@@ -34,8 +34,8 @@ namespace TicketingSystem.Web.Helpers
 			startingPage = Math.Max(startingPage, 1);
 
 			var maxPage = Math.Min(startingPage + options.NumberOfPages - 1, options.LastPage);
-			var prevPage = Math.Min(selectedPage + 1, options.LastPage);
-			var nextPage = Math.Max(selectedPage - 1, 1);
+			var nextPage = Math.Min(selectedPage + 1, options.LastPage);
+			var prevPage = Math.Max(selectedPage - 1, 1);
 
 			var pager = new TagBuilder("ul");
 

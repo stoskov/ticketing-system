@@ -94,22 +94,27 @@ namespace TicketingSystem.Web.Controllers
 
 			var commentsPageIndex = commentsPage.GetValueOrDefault(1);
 
-			ticketViewModel.Comments = ticket.Comments
-											 .Select(c => new CommentDetailsViewModel()
-													{
-														Id = c.Id,
-														UserName = c.User.UserName,
-														Content = c.Content,
-														PostDate = c.PostDate,
-														TicketId = c.Ticket.Id,
-													})
-											 .OrderByDescending(c => c.PostDate)
-											 .Skip((commentsPageIndex - 1) * Properties.Settings.Default.TicketPageCommentsPageSize)
-											 .Take(Properties.Settings.Default.TicketPageCommentsPageSize)
-											 .ToList();
+			var comments = ticket.Comments
+								 .Select(c => new CommentDetailsViewModel()
+										{
+											Id = c.Id,
+											UserName = c.User.UserName,
+											Content = c.Content,
+											PostDate = c.PostDate,
+											TicketId = c.Ticket.Id,
+										})
+								 .OrderByDescending(c => c.PostDate)
+								 .Skip((commentsPageIndex - 1) * Properties.Settings.Default.TicketPageCommentsPageSize)
+								 .Take(Properties.Settings.Default.TicketPageCommentsPageSize)
+								 .ToList();
 
-			this.ViewBag.CurrentPage = commentsPageIndex;
-			this.ViewBag.PagesCount = (int)Math.Ceiling((double)ticket.Comments.Count / Properties.Settings.Default.TicketPageCommentsPageSize);
+			ticketViewModel.CommentsContainer = new CommentPagebleViewModel
+			{
+				Comments = comments,
+				CurrentPage = commentsPageIndex,
+				TotalRecordsCount = comments.Count(),
+				PagesCount = (int)Math.Ceiling((double)ticket.Comments.Count / Properties.Settings.Default.TicketPageCommentsPageSize)
+			};
 
 			return this.View(ticketViewModel);
 		}
