@@ -175,6 +175,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\CommentsController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TicketsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -284,6 +285,7 @@
     <Content Include="Views\Shared\_CreateUpdateTicket.cshtml" />
     <Content Include="Views\Shared\_CreateUpdateCategory.cshtml" />
     <Content Include="Views\Shared\_CategoryDetails.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
