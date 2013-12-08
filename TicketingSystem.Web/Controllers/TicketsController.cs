@@ -339,9 +339,10 @@ namespace TicketingSystem.Web.Controllers
 			return this.RedirectToAction("Details", new { Id = comment.TicketId });
 		}
 
-		private IEnumerable<SelectListItem> GetCategoriesList(bool withEmptyValue = false)
+		private IEnumerable<SelectListItem> GetCategoriesList()
 		{
 			List<SelectListItem> categories = this.Data.Categories.All()
+												  .OrderBy(c => c.Name)
 												  .ToList()
 												  .Select(c => new SelectListItem
 														 {
@@ -350,15 +351,7 @@ namespace TicketingSystem.Web.Controllers
 														 })
 												  .ToList();
 
-			var categoriesList = new List<SelectListItem>();
-
-			if (withEmptyValue)
-			{
-				categoriesList.Add(new SelectListItem { Text = "", Value = "" });
-				categoriesList.AddRange(categories);
-			}
-
-			categoriesList.AddRange(categories);
+			var categoriesList = new List<SelectListItem>(categories);
 
 			return categoriesList;
 		}
@@ -372,6 +365,8 @@ namespace TicketingSystem.Web.Controllers
 								 Text = p.ToString()
 							 };
 
+			priorities = priorities.OrderBy(p => p.Text);
+
 			return priorities.ToList();
 		}
 
@@ -383,6 +378,8 @@ namespace TicketingSystem.Web.Controllers
 							   Value = p.ToString(),
 							   Text = p.ToString()
 						   };
+
+			statuses = statuses.OrderBy(p => p.Text);
 
 			return statuses.ToList();
 		}

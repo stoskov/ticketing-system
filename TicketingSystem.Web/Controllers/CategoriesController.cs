@@ -44,25 +44,7 @@ namespace TicketingSystem.Web.Controllers
 
 		public ActionResult Details(int? id)
 		{
-			if (id == null)
-			{
-				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-			}
-
-			var category = this.Data.Categories.GetById((int)id);
-
-			if (category == null)
-			{
-				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-			}
-
-			var viewModel = new CategoryViewModel
-			{
-				Id = category.Id,
-				Name = category.Name
-			};
-
-			return View(viewModel);
+			return this.ReturnCategoryView(id);
 		}
 
 		[HttpGet]
@@ -77,77 +59,75 @@ namespace TicketingSystem.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult Create(CategoryViewModel categoryViewModel)
 		{
-			if (!ModelState.IsValid)
-			{
-				return View(categoryViewModel);
-			}
+			return ManipulaateCategory(0, false,
+				c =>
+				{
+					var category = new Category
+					{
+						Name = categoryViewModel.Name
+					};
 
-			var category = new Category
-			{
-				Name = categoryViewModel.Name
-			};
-
-			this.Data.Categories.Add(category);
-			this.Data.SaveChanges();
-
-			return RedirectToAction("Index");
+					this.Data.Categories.Add(category);
+				});
 		}
 
 		[HttpGet]
 		public ActionResult Edit(int? id)
 		{
-			if (id == null)
-			{
-				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-			}
-
-			var category = this.Data.Categories.GetById((int)id);
-
-			if (category == null)
-			{
-				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-			}
-
-			var viewModel = new CategoryViewModel
-			{
-				Id = category.Id,
-				Name = category.Name
-			};
-
-			return View(viewModel);
+			return ReturnCategoryView(id);
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Edit(int? id, CategoryViewModel categoryViewModel)
 		{
-			if (id == null)
+			return ManipulaateCategory(id, true,
+				c =>
+				{
+					c.Name = categoryViewModel.Name;
+
+					this.Data.Categories.Update(c);
+				});
+		}
+
+		[HttpGet]
+		public ActionResult Delete(int? id)
+		{
+			return this.ReturnCategoryView(id);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Delete(int? id, CategoryViewModel categoryViewModel)
+		{
+			return ManipulaateCategory(id, true,
+				c =>
+				{
+					this.Data.Categories.Delete(c);
+				});
+		}
+
+		private ActionResult ManipulaateCategory(int? id, bool checkExistance, Action<Category> action)
+		{
+			if (checkExistance && id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
 
 			var category = this.Data.Categories.GetById((int)id);
 
-			if (category == null)
+			if (checkExistance && category == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
 			}
 
-			if (!ModelState.IsValid)
-			{
-				return View(categoryViewModel);
-			}
-
-			category.Name = categoryViewModel.Name;
-
-			this.Data.Categories.Update(category);
+			action(category);
 			this.Data.SaveChanges();
 
 			return RedirectToAction("Index");
 		}
 
-		[HttpGet]
-		public ActionResult Delete(int? id)
+		private ActionResult ReturnCategoryView(int? id)
 		{
 			if (id == null)
 			{
@@ -168,28 +148,6 @@ namespace TicketingSystem.Web.Controllers
 			};
 
 			return View(viewModel);
-		}
-
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Delete(int? id, CategoryViewModel categoryViewModel)
-		{
-			if (id == null)
-			{
-				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-			}
-
-			var category = this.Data.Categories.GetById((int)id);
-
-			if (category == null)
-			{
-				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-			}
-
-			this.Data.Categories.Delete(category);
-			this.Data.SaveChanges();
-
-			return RedirectToAction("Index");
 		}
 	}
 }
