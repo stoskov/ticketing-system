@@ -10,5 +10,8 @@ namespace TicketingSystem.Web.Models.Base
 		[Required]
 		[Display(Name = "Name")]
 		public string Name { get; set; }
+
+		[Display(Name="Number of Tickets")]
+		public int TicketsCount { get; set; }
 	}
 }

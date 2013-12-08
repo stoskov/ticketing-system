@@ -34,6 +34,9 @@
                     <th class="categories-list header name">
                         @this.Html.DisplayNameFor(model => ((CategorySummaryViewModel)model.CategoriesList).Name)
                     </th>
+                    <th class="categories-list header tickets-count">
+                        @this.Html.DisplayNameFor(model => ((CategorySummaryViewModel)model.CategoriesList).TicketsCount)
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -43,6 +46,11 @@
                         <td class="categories-list content title">
                             <a href='@Url.Action("Details", new { id = item.Id })'>
                                 @item.Name
+                            </a>
+                        </td>
+                        <td class="categories-list content tickets-count">
+                            <a href='@Url.Action("Details", new { id = item.Id })'>
+                                @item.TicketsCount
                             </a>
                         </td>
                     </tr>

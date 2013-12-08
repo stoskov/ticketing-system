@@ -20,6 +20,7 @@ namespace TicketingSystem.Web.Controllers
 													{
 														Id = c.Id,
 														Name = c.Name,
+														TicketsCount = c.Tickets.Count(),
 														SearchRelevance = Helpers.Filter.CalcualteFilterCategoryRelevance(c, filter.Q)
 													})
 											 .Where(c => c.SearchRelevance > 0)
