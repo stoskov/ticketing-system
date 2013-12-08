@@ -104,45 +104,52 @@ a:hover {
 		text-align: justify;
 	}
 
-.tickets-list-gridview select {
+.gridview select {
 	width: 100%;
 }
 
-.tickets-list-gridview .tickets-list.header {
+.gridview {
+	width: 100%;
+}
+
+.gridview .header {
 	padding: 5px;
 	background-color: #ddd;
 	border: 1px solid #ddd;
 }
 
-.tickets-list-gridview .tickets-list.header.title {
-	width: 600px;
-}
-
-.tickets-list-gridview .tickets-list.header.category {
-	width: 300px;
-}
-
-.tickets-list-gridview .tickets-list.header.author,
-.tickets-list-gridview .tickets-list.header.status,
-.tickets-list-gridview .tickets-list.header.priority {
-	width: 90px;
-}
-
-.tickets-list-gridview .tickets-list.filter {
-	margin-top: 5px;
-}
-
-.tickets-list-gridview .tickets-list.content {
+.gridview .content {
 	padding: 10px;
 	border: 1px solid #ddd;
 	vertical-align: central;
-	/*text-align: justify;*/
 }
 
-.tickets-list-gridview .tickets-list.content.author,
-.tickets-list-gridview .tickets-list.content.status,
-.tickets-list-gridview .tickets-list.content.priority {
+.gridview .filter {
+	margin-top: 5px;
+}
+
+.gridview .tickets-list.header.title {
+	width: 600px;
+}
+
+.gridview .tickets-list.header.category {
+	width: 300px;
+}
+
+.gridview .tickets-list.header.author,
+.gridview .tickets-list.header.status,
+.gridview .tickets-list.header.priority {
+	width: 90px;
+}
+
+.gridview .tickets-list.content.author,
+.gridview .tickets-list.content.status,
+.gridview .tickets-list.content.priority {
 	text-align: center;
+}
+
+.gridview .categories-list.header.name {
+	width: 100%;
 }
 
 /*body {

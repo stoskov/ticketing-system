@@ -1,33 +1,92 @@
-﻿@model IEnumerable<TicketingSystem.Models.Category>
+﻿@model CategoryPagebleViewModel
 
 @{
-    ViewBag.Title = "Index";
+    this.ViewBag.Title = "All Categories";
 }
 
-<h2>Index</h2>
+<h3>
+    All Categories
+</h3>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th></th>
-    </tr>
+<div class="row-fluid">
+    <div class="input-append span10">
+        <input class="span11" id="q" type="text" value='@this.Model.Filter.Q'>
+        <button class="btn btn-primary" id="q-button" type="button">Search</button>
+    </div>
+    <div class="span2">
+        <div class="right clearfix">
+            <a class="btn btn-primary" href='@Url.Action("Index")'>Clear filters</a>
+        </div>
+    </div>
+</div>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+<div class="row-fluid">
+    <table class="gridview">
+        <tr>
+            <th class="categories-list header name">
+                @this.Html.DisplayNameFor(model => ((CategorySummaryViewModel)model.CategoriesList).Name)
+            </th>
+        </tr>
+
+        @foreach (var item in this.Model.CategoriesList)
+        {
+            <tr>
+                <td class="categories-list content title">
+                    <a href='@Url.Action("Details", new { id = item.Id })'>
+                        @item.Name
+                    </a>
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="row-fluid">
+        <span class="right">Results: @this.Model.TotalRecordsCount</span>
+    </div>
+
+    @Html.Paging(new PagingOptions { QueryParameterName = "page", LastPage = this.Model.PagesCount, wrapperClasses = "pagination-right" })
+
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        function setFilter(filter, value) {
+            var regex = new RegExp("(" + filter + "=[\\w\\W]*?)(&|$)", "i"),
+                queryString = window.location.search;
+
+            if (regex.test(queryString)) {
+                queryString = queryString.replace(regex, function (a, b, c) {
+                    return filter + "=" + value + c
+                });
+            }
+            else if (queryString.length > 1) {
+                queryString = queryString + "&" + filter + "=" + value;
+            }
+            else {
+                queryString = queryString + "?" + filter + "=" + value;
+            }
+
+            window.location.search = queryString;
+        }
+
+        $(function () {
+            $("#q-button").on("click", function () {
+                var element = $("#q")[0],
+                    value = element.value,
+                    filter = element.id;
+
+                setFilter(filter, value);
+            });
+
+            $("#q").on("keypress", function (e) {
+                var element = $("#q")[0],
+                    value = element.value,
+                    filter = element.id;
+
+                if (e.keyCode === 13) {
+                    setFilter(filter, value);
+                }
+            });
+        });
+    </script>
 }
-
-</table>
