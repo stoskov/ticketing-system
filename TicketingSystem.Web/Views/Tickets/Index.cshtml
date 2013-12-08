@@ -7,84 +7,95 @@
     this.ViewBag.Title = "All Tickets";
 }
 
-<h3>All Tickets</h3>
+<div class="page page-tickets-list">
 
-<div class="row-fluid">
-    <div class="input-append span10">
-        <input class="span11" id="q" type="text" value='@this.Model.Filter.Q'>
-        <button class="btn btn-primary" id="q-button" type="button">Search</button>
-    </div>
-    <div class="span2">
-        <div class="right clearfix">
-            <a class="btn btn-primary" href='@Url.Action("Index")'>Clear filters</a>
+    <div class="row-fluid ticket-main-title-wrap">
+        <div class="span10">
+            <h3>All Tickets</h3>
+        </div>
+        <div class="span2 clearfix ticket-actions">
+            <a class="right" href='@Url.Action("Create")'>New Ticket</a>
         </div>
     </div>
-</div>
-
-<div class="row-fluid">
-    <table class="gridview">
-        <tr>
-            <th class="tickets-list header title">
-                @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).Title)
-                <div class="tickets-list filter">
-                    @Html.DropDownList("Title", new SelectList(this.Model.MetaData.TitlesList, "Value", "Text", this.Model.Filter.Title))
-                </div>
-            </th>
-            <th class="tickets-list header category">
-                @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).CategoryName)
-                <div class="tickets-list filter">
-                    @Html.DropDownList("CategoryId", new SelectList(this.Model.MetaData.CategoriesList, "Value", "Text", this.Model.Filter.CategoryId))
-                </div>
-            </th>
-            <th class="tickets-list header author">
-                @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).AuthorName)
-                <div class="tickets-list filter">
-                    @Html.DropDownList("AuthorId", new SelectList(this.Model.MetaData.AuthorsList, "Value", "Text", this.Model.Filter.AuthorId))
-                </div>
-            </th>
-            <th class="tickets-list header priority">
-                @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).Priority)
-                <div class="tickets-list filter">
-                    @Html.DropDownList("Priority", new SelectList(this.Model.MetaData.PrioritiesList, "Value", "Text", this.Model.Filter.Priority))
-                </div>
-            </th>
-            <th class="tickets-list header status">
-                @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).Status)
-                <div class="tickets-list filter">
-                    @Html.DropDownList("Status", new SelectList(this.Model.MetaData.StatusesList, "Value", "Text", this.Model.Filter.Status))
-                </div>
-            </th>
-        </tr>
-
-        @foreach (var item in this.Model.TicketsList)
-        {
-            <tr>
-                <td class="tickets-list content title">
-                    <a href='@Url.Action("Details", new { id = item.Id })'>
-                        @item.Title
-                    </a>
-                </td>
-                <td class="tickets-list content category">
-                    @this.Html.DisplayFor(modelItem => item.CategoryName)
-                </td>
-                <td class="tickets-list content author">
-                    @this.Html.DisplayFor(modelItem => item.AuthorName)
-                </td>
-                <td class="tickets-list content priority">
-                    @this.Html.DisplayFor(modelItem => item.Priority)
-                </td>
-                <td class="tickets-list content status">
-                    @this.Html.DisplayFor(modelItem => item.Status)
-                </td>
-            </tr>
-        }
-    </table>
 
     <div class="row-fluid">
-        <span class="right">Results: @this.Model.TotalRecordsCount</span>
+        <div class="input-append span10">
+            <input class="span11" id="q" type="text" value='@this.Model.Filter.Q'>
+            <button class="btn btn-primary" id="q-button" type="button">Search</button>
+        </div>
+        <div class="span2">
+            <div class="right clearfix">
+                <a class="btn btn-primary" href='@Url.Action("Index")'>Clear filters</a>
+            </div>
+        </div>
     </div>
 
-    @Html.Paging(new PagingOptions { QueryParameterName = "page", LastPage = this.Model.PagesCount, wrapperClasses = "pagination-right" })
+    <div class="row-fluid">
+        <table class="gridview">
+            <tr>
+                <th class="tickets-list header title">
+                    @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).Title)
+                    <div class="tickets-list filter">
+                        @Html.DropDownList("Title", new SelectList(this.Model.MetaData.TitlesList, "Value", "Text", this.Model.Filter.Title))
+                    </div>
+                </th>
+                <th class="tickets-list header category">
+                    @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).CategoryName)
+                    <div class="tickets-list filter">
+                        @Html.DropDownList("CategoryId", new SelectList(this.Model.MetaData.CategoriesList, "Value", "Text", this.Model.Filter.CategoryId))
+                    </div>
+                </th>
+                <th class="tickets-list header author">
+                    @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).AuthorName)
+                    <div class="tickets-list filter">
+                        @Html.DropDownList("AuthorId", new SelectList(this.Model.MetaData.AuthorsList, "Value", "Text", this.Model.Filter.AuthorId))
+                    </div>
+                </th>
+                <th class="tickets-list header priority">
+                    @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).Priority)
+                    <div class="tickets-list filter">
+                        @Html.DropDownList("Priority", new SelectList(this.Model.MetaData.PrioritiesList, "Value", "Text", this.Model.Filter.Priority))
+                    </div>
+                </th>
+                <th class="tickets-list header status">
+                    @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).Status)
+                    <div class="tickets-list filter">
+                        @Html.DropDownList("Status", new SelectList(this.Model.MetaData.StatusesList, "Value", "Text", this.Model.Filter.Status))
+                    </div>
+                </th>
+            </tr>
+
+            @foreach (var item in this.Model.TicketsList)
+            {
+                <tr>
+                    <td class="tickets-list content title">
+                        <a href='@Url.Action("Details", new { id = item.Id })'>
+                            @item.Title
+                        </a>
+                    </td>
+                    <td class="tickets-list content category">
+                        @this.Html.DisplayFor(modelItem => item.CategoryName)
+                    </td>
+                    <td class="tickets-list content author">
+                        @this.Html.DisplayFor(modelItem => item.AuthorName)
+                    </td>
+                    <td class="tickets-list content priority">
+                        @this.Html.DisplayFor(modelItem => item.Priority)
+                    </td>
+                    <td class="tickets-list content status">
+                        @this.Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div class="row-fluid">
+            <span class="right">Results: @this.Model.TotalRecordsCount</span>
+        </div>
+
+        @Html.Paging(new PagingOptions { QueryParameterName = "page", LastPage = this.Model.PagesCount, wrapperClasses = "pagination-right" })
+
+    </div>
 
 </div>
 

@@ -4,16 +4,17 @@
     ViewBag.Title = "Add Ticket";
 }
 
-<div class="row-fluid ticket-main-title-wrap">
-    <div class="span10">
-        <h3>New Ticket</h3>
-    </div>
-    <div class="span2 clearfix ticket-actions">
-        <a class="right" href='@Url.Action("Index", "Home")'>Home</a>
-    </div>
-</div>
-
 <div class="page page-create-ticket">
+
+    <div class="row-fluid ticket-main-title-wrap">
+        <div class="span10">
+            <h3>New Ticket</h3>
+        </div>
+        <div class="span2 clearfix ticket-actions">
+            <a class="right" href='@Url.Action("Index", "Home")'>Home</a>
+        </div>
+    </div>
+
 
     @using (Html.BeginForm())
     {
