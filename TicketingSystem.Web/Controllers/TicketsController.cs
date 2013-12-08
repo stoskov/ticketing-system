@@ -17,23 +17,24 @@ namespace TicketingSystem.Web.Controllers
 		[AllowAnonymous]
 		public ActionResult Index(TicketFilter filter, int? page)
 		{
-			var filteredTicketsList = this.ApplyFilter(filter);
 			var pageIndex = page.GetValueOrDefault(1);
+			var filteredTicketsList = this.ApplyFilter(filter)
+										  .AsEnumerable()
+										  .Select(t => new TicketSummaryViewModel
+												 {
+													 Id = t.Id,
+													 Title = t.Title,
+													 CategoryName = t.Category.Name,
+													 AuthorName = t.Author.UserName,
+													 Priority = t.Priority,
+													 Status = t.Status,
+													 SearchRelevance = Helpers.Filter.CalcualteFilterTicketRelevance(t, filter.Q)
+												 })
+										  .Where(t => t.SearchRelevance > 0)
+										  .OrderByDescending(t => t.SearchRelevance)
+										  .ThenByDescending(t => t.Id);
+
 			var pagedTicketsList = filteredTicketsList
-													  .AsEnumerable()
-													  .Select(t => new TicketSummaryViewModel
-															 {
-																 Id = t.Id,
-																 Title = t.Title,
-																 CategoryName = t.Category.Name,
-																 AuthorName = t.Author.UserName,
-																 Priority = t.Priority,
-																 Status = t.Status,
-																 SearchRelevance = this.CalcualteRelevance(t, filter.Q)
-															 })
-													  .Where(t => t.SearchRelevance > 0)
-													  .OrderByDescending(t => t.SearchRelevance)
-													  .ThenByDescending(t => t.Id)
 													  .Skip((pageIndex - 1) * Properties.Settings.Default.TicketsPageSize)
 													  .Take(Properties.Settings.Default.TicketsPageSize);
 
@@ -430,28 +431,6 @@ namespace TicketingSystem.Web.Controllers
 			result.AddRange(filterList);
 
 			return result;
-		}
-
-		private int CalcualteRelevance(Ticket ticket, string queryString)
-		{
-			if (string.IsNullOrEmpty(queryString))
-			{
-				return 1;
-			}
-
-			var relevance = 0;
-			var words = queryString.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-			var searchTarget = string.Format("{0}{1}{2}{3}", ticket.Title, ticket.Author.UserName, ticket.Status.ToString(), ticket.Priority.ToString()).ToLower();
-
-			foreach (var word in words)
-			{
-				if (searchTarget.IndexOf(word.ToLower()) >= 0)
-				{
-					relevance++;
-				}
-			}
-
-			return relevance;
 		}
 	}
 }

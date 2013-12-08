@@ -5,7 +5,7 @@ using TicketingSystem.Models;
 
 namespace TicketingSystem.Web.Models.Base
 {
-	public abstract class TicketViewModel
+	public class TicketViewModel
 	{
 		[Display(Name = "Identifier")]
 		public int Id { get; set; }

@@ -180,6 +180,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Filter.cs" />
     <Compile Include="Helpers\PagingOptions.cs" />
     <Compile Include="Helpers\SelectListItemComparer.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
@@ -188,11 +189,13 @@
     <Compile Include="Models\Accounts\ManageUserViewModel.cs" />
     <Compile Include="Models\Accounts\RegisterViewModel.cs" />
     <Compile Include="Models\Base\PagebleViewModel.cs" />
+    <Compile Include="Models\Categories\CategoryPagebleViewModel.cs" />
     <Compile Include="Models\Comments\CommentPagebleViewModel.cs" />
+    <Compile Include="Models\Base\FilterViewModel.cs" />
     <Compile Include="Models\Tickets\TicketSummaryViewModel.cs" />
     <Compile Include="Models\Tickets\TicketsMetaDataViewModel.cs" />
     <Compile Include="Models\Categories\CategorySummaryViewModel.cs" />
-    <Compile Include="Models\Categories\CategoryViewModel.cs" />
+    <Compile Include="Models\Base\CategoryViewModel.cs" />
     <Compile Include="Models\Comments\CommentDetailsViewModel.cs" />
     <Compile Include="Models\Tickets\TicketCreateUpdateViewModel.cs" />
     <Compile Include="Models\Tickets\TicketFilter.cs" />

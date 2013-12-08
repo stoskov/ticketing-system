@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using TicketingSystem.Web.Models.Base;
 using TicketingSystem.Web.Models.Tickets;
 
 namespace TicketingSystem.Web.Models.Categories
 {
-	public class CategorySummaryViewModel
+	public class CategorySummaryViewModel : CategoryViewModel
 	{
-		[Key]
-		public int Id { get; set; }
+		public int SearchRelevance { get; set; }
 
-		[Display(Name = "Category Name")]
-		public string Name { get; set; }
-
-		public List<TicketSummaryViewModel> Tickets { get; set; }
+		public IEnumerable<TicketSummaryViewModel> Tickets { get; set; }
 	}
 }

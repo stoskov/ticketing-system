@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Web.Mvc;
 using TicketingSystem.Models;
+using TicketingSystem.Web.Models.Base;
 
 namespace TicketingSystem.Web.Models.Tickets
 {
-	public class TicketFilter
+	public class TicketFilter : FilterViewModel
 	{
 		[AllowHtml]
 		public string Title { get; set; }
@@ -13,9 +14,6 @@ namespace TicketingSystem.Web.Models.Tickets
 		public int? CategoryId { get; set; }
 
 		public string AuthorId { get; set; }
-
-		[AllowHtml]
-		public string Q { get; set; }
 
 		public TicketPriority? Priority { get; set; }
 

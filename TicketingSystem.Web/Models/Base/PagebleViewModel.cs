@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace TicketingSystem.Web.Models.Base
 {
-	public abstract class PagebleViewModel
+	public class PagebleViewModel
 	{
 		public int PagesCount { get; set; }
 
