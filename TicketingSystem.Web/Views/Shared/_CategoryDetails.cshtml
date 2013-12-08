@@ -1,4 +1,4 @@
-﻿@model CategoryViewModel
+﻿@model CategoryDetailsViewModel
 
 <div class="row-fluid ticket-header">
     <div class="span10">
@@ -16,3 +16,23 @@
         }
     </div>
 </div>
+
+<div class="row-fluid separate ticket-subheader">
+    Tickets (@this.Model.Tickets.TotalRecordsCount):
+</div>
+
+@foreach (TicketSummaryViewModel ticket in this.Model.Tickets.TicketsList)
+{
+    <div class="row-fluid">
+        <div class="comment-info-wrap span12">
+            <div class="comment-info header">
+                Author: @ticket.AuthorName
+                Status: @ticket.Status
+                Priority: @ticket.Priority
+            </div>
+            <div class="comment-info content">@ticket.Title</div>
+        </div>
+    </div>
+}
+
+@Html.Paging(new PagingOptions { QueryParameterName = "ticketsPage", LastPage = this.Model.Tickets.PagesCount, wrapperClasses = "pagination-right" })

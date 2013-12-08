@@ -190,11 +190,12 @@
     <Compile Include="Models\Accounts\RegisterViewModel.cs" />
     <Compile Include="Models\Base\PagebleViewModel.cs" />
     <Compile Include="Models\Categories\CategoryPagebleViewModel.cs" />
+    <Compile Include="Models\Categories\CategorySummaryViewModel.cs" />
     <Compile Include="Models\Comments\CommentPagebleViewModel.cs" />
     <Compile Include="Models\Base\FilterViewModel.cs" />
     <Compile Include="Models\Tickets\TicketSummaryViewModel.cs" />
     <Compile Include="Models\Tickets\TicketsMetaDataViewModel.cs" />
-    <Compile Include="Models\Categories\CategorySummaryViewModel.cs" />
+    <Compile Include="Models\Categories\CategoryDetailsViewModel.cs" />
     <Compile Include="Models\Base\CategoryViewModel.cs" />
     <Compile Include="Models\Comments\CommentDetailsViewModel.cs" />
     <Compile Include="Models\Tickets\TicketCreateUpdateViewModel.cs" />

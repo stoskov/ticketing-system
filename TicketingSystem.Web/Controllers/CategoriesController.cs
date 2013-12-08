@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using TicketingSystem.Models;
 using TicketingSystem.Web.Models.Base;
 using TicketingSystem.Web.Models.Categories;
+using TicketingSystem.Web.Models.Tickets;
 
 namespace TicketingSystem.Web.Controllers
 {
@@ -42,9 +43,9 @@ namespace TicketingSystem.Web.Controllers
 			return View(viewModel);
 		}
 
-		public ActionResult Details(int? id)
+		public ActionResult Details(int? id, int? ticketsPage)
 		{
-			return this.ReturnCategoryView(id);
+			return this.ReturnCategoryView(id, ticketsPage);
 		}
 
 		[HttpGet]
@@ -74,7 +75,7 @@ namespace TicketingSystem.Web.Controllers
 		[HttpGet]
 		public ActionResult Edit(int? id)
 		{
-			return ReturnCategoryView(id);
+			return ReturnCategoryView(id, 0);
 		}
 
 		[HttpPost]
@@ -91,9 +92,9 @@ namespace TicketingSystem.Web.Controllers
 		}
 
 		[HttpGet]
-		public ActionResult Delete(int? id)
+		public ActionResult Delete(int? id, int? ticketsPage)
 		{
-			return this.ReturnCategoryView(id);
+			return this.ReturnCategoryView(id, ticketsPage);
 		}
 
 		[HttpPost]
@@ -127,7 +128,7 @@ namespace TicketingSystem.Web.Controllers
 			return RedirectToAction("Index");
 		}
 
-		private ActionResult ReturnCategoryView(int? id)
+		private ActionResult ReturnCategoryView(int? id, int? ticketsPage)
 		{
 			if (id == null)
 			{
@@ -141,10 +142,40 @@ namespace TicketingSystem.Web.Controllers
 				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
 			}
 
-			var viewModel = new CategoryViewModel
+			var pageIndex = ticketsPage.GetValueOrDefault(1);
+			var ticketsList = this.Data.Tickets.All()
+								  .Where(t => t.CategoryId == category.Id)
+								  .AsEnumerable()
+								  .Select(t => new TicketSummaryViewModel
+										 {
+											 Id = t.Id,
+											 Title = t.Title,
+											 CategoryName = t.Category.Name,
+											 AuthorName = t.Author.UserName,
+											 Priority = t.Priority,
+											 Status = t.Status
+										 })
+								  .OrderByDescending(t => t.SearchRelevance)
+								  .ThenByDescending(t => t.Id);
+
+			var pagedTicketsList = ticketsList
+											  .Skip((pageIndex - 1) * Properties.Settings.Default.TicketsPageSize)
+											  .Take(Properties.Settings.Default.TicketsPageSize);
+
+			var pagesCount = (int)Math.Ceiling((double)ticketsList.Count() / Properties.Settings.Default.TicketsPageSize);
+
+			var ticketsViewModel = new TicketsFilterableViewModel
+			{
+				TicketsList = pagedTicketsList,
+				PagesCount = pagesCount,
+				TotalRecordsCount = ticketsList.Count()
+			};
+
+			var viewModel = new CategoryDetailsViewModel
 			{
 				Id = category.Id,
-				Name = category.Name
+				Name = category.Name,
+				Tickets = ticketsViewModel
 			};
 
 			return View(viewModel);
