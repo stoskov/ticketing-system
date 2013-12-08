@@ -1,0 +1,18 @@
+﻿@model CategoryViewModel
+
+<div class="row-fluid ticket-header">
+    <div class="span10">
+        <header>
+            <h4 class="ticket-title">@this.Model.Name</h4>
+        </header>
+    </div>
+    <div class="span2">
+        @if ((bool)ViewData["RenderButtons"] && User.Identity.IsAuthenticated)
+        {
+            <div class="ticket-actions right clearfix">
+                <a class="btn btn-info" href='@Url.Action("Edit", new {id=this.Model.Id})'>Edit</a>
+                <a class="btn btn-danger" href='@Url.Action("Delete", new {id=this.Model.Id})'>Delete</a>
+            </div>
+        }
+    </div>
+</div>

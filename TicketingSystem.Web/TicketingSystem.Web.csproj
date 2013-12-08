@@ -280,6 +280,8 @@
     <Content Include="Views\Categories\Index.cshtml" />
     <Content Include="Views\Shared\_TicketDetails.cshtml" />
     <Content Include="Views\Shared\_CreateUpdateTicket.cshtml" />
+    <Content Include="Views\Shared\_CreateUpdateCategory.cshtml" />
+    <Content Include="Views\Shared\_CategoryDetails.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

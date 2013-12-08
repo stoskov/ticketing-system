@@ -1,25 +1,18 @@
-﻿@model TicketingSystem.Models.Category
-
+﻿@model CategoryViewModel
 @{
-    ViewBag.Title = "Details";
+    this.ViewBag.Title = "Category Details";
 }
 
-<h2>Details</h2>
+<div class="page page-category-details">
+    <div class="row-fluid ticket-main-title-wrap">
+        <div class="span10">
+            <h3>Category Details</h3>
+        </div>
+        <div class="span2 clearfix ticket-actions">
+            <a class="right" href='@Url.Action("Index", "Home")'>Home</a>
+        </div>
+    </div>
 
-<fieldset>
-    <legend>Category</legend>
-    <dl>
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+    @Html.Partial("_CategoryDetails", this.Model, new ViewDataDictionary { { "RenderButtons", true } })
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-    </dl>
-</fieldset>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+</div>

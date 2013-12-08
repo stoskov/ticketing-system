@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
+using TicketingSystem.Models;
 using TicketingSystem.Web.Models.Base;
 using TicketingSystem.Web.Models.Categories;
 
@@ -39,101 +41,155 @@ namespace TicketingSystem.Web.Controllers
 
 			return View(viewModel);
 		}
-		//// GET: /Categories/Details/5
-		//public ActionResult Details(int? id)
-		//{
-		//	if (id == null)
-		//	{
-		//		return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-		//	}
-		//	Category category = db.Categories.Find(id);
-		//	if (category == null)
-		//	{
-		//		return HttpNotFound();
-		//	}
-		//	return View(category);
-		//}
-		//// GET: /Categories/Create
-		//public ActionResult Create()
-		//{
-		//	return View();
-		//}
-		//// POST: /Categories/Create
-		//// To protect from over posting attacks, please enable the specific properties you want to bind to, for 
-		//// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		//// 
-		//// Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
-		//[HttpPost]
-		//[ValidateAntiForgeryToken]
-		//public ActionResult Create(Category category)
-		//{
-		//	if (ModelState.IsValid)
-		//	{
-		//		db.Categories.Add(category);
-		//		db.SaveChanges();
-		//		return RedirectToAction("Index");
-		//	}
-		//	return View(category);
-		//}
-		//// GET: /Categories/Edit/5
-		//public ActionResult Edit(int? id)
-		//{
-		//	if (id == null)
-		//	{
-		//		return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-		//	}
-		//	Category category = db.Categories.Find(id);
-		//	if (category == null)
-		//	{
-		//		return HttpNotFound();
-		//	}
-		//	return View(category);
-		//}
-		//// POST: /Categories/Edit/5
-		//// To protect from over posting attacks, please enable the specific properties you want to bind to, for 
-		//// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		//// 
-		//// Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
-		//[HttpPost]
-		//[ValidateAntiForgeryToken]
-		//public ActionResult Edit(Category category)
-		//{
-		//	if (ModelState.IsValid)
-		//	{
-		//		db.Entry(category).State = EntityState.Modified;
-		//		db.SaveChanges();
-		//		return RedirectToAction("Index");
-		//	}
-		//	return View(category);
-		//}
-		//// GET: /Categories/Delete/5
-		//public ActionResult Delete(int? id)
-		//{
-		//	if (id == null)
-		//	{
-		//		return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-		//	}
-		//	Category category = db.Categories.Find(id);
-		//	if (category == null)
-		//	{
-		//		return HttpNotFound();
-		//	}
-		//	return View(category);
-		//}
-		//// POST: /Categories/Delete/5
-		//[HttpPost, ActionName("Delete")]
-		//[ValidateAntiForgeryToken]
-		//public ActionResult DeleteConfirmed(int id)
-		//{
-		//	Category category = db.Categories.Find(id);
-		//	db.Categories.Remove(category);
-		//	db.SaveChanges();
-		//	return RedirectToAction("Index");
-		//}
-		//protected override void Dispose(bool disposing)
-		//{
-		//	db.Dispose();
-		//	base.Dispose(disposing);
-		//}
+
+		public ActionResult Details(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			var category = this.Data.Categories.GetById((int)id);
+
+			if (category == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
+
+			var viewModel = new CategoryViewModel
+			{
+				Id = category.Id,
+				Name = category.Name
+			};
+
+			return View(viewModel);
+		}
+
+		[HttpGet]
+		public ActionResult Create()
+		{
+			var category = new CategoryViewModel();
+
+			return View(category);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Create(CategoryViewModel categoryViewModel)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(categoryViewModel);
+			}
+
+			var category = new Category
+			{
+				Name = categoryViewModel.Name
+			};
+
+			this.Data.Categories.Add(category);
+			this.Data.SaveChanges();
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet]
+		public ActionResult Edit(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			var category = this.Data.Categories.GetById((int)id);
+
+			if (category == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
+
+			var viewModel = new CategoryViewModel
+			{
+				Id = category.Id,
+				Name = category.Name
+			};
+
+			return View(viewModel);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Edit(int? id, CategoryViewModel categoryViewModel)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			var category = this.Data.Categories.GetById((int)id);
+
+			if (category == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
+
+			if (!ModelState.IsValid)
+			{
+				return View(categoryViewModel);
+			}
+
+			category.Name = categoryViewModel.Name;
+
+			this.Data.Categories.Update(category);
+			this.Data.SaveChanges();
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet]
+		public ActionResult Delete(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			var category = this.Data.Categories.GetById((int)id);
+
+			if (category == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
+
+			var viewModel = new CategoryViewModel
+			{
+				Id = category.Id,
+				Name = category.Name
+			};
+
+			return View(viewModel);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Delete(int? id, CategoryViewModel categoryViewModel)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			var category = this.Data.Categories.GetById((int)id);
+
+			if (category == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
+
+			this.Data.Categories.Delete(category);
+			this.Data.SaveChanges();
+
+			return RedirectToAction("Index");
+		}
 	}
 }
