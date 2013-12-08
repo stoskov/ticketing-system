@@ -10,6 +10,6 @@ namespace TicketingSystem.Web.Models.Categories
 	{
 		public int SearchRelevance { get; set; }
 
-		public IEnumerable<TicketSummaryViewModel> Tickets { get; set; }
+		public IList<TicketSummaryViewModel> Tickets { get; set; }
 	}
 }
