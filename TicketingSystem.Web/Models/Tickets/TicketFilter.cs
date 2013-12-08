@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using TicketingSystem.Models;
@@ -15,6 +14,7 @@ namespace TicketingSystem.Web.Models.Tickets
 
 		public string AuthorId { get; set; }
 
+		[AllowHtml]
 		public string Q { get; set; }
 
 		public TicketPriority? Priority { get; set; }

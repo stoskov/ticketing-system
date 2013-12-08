@@ -1,6 +1,7 @@
 ﻿@using System.Web.Mvc.Html;
+@using TicketingSystem.Web.Models.Base;
 
-@model TicketsSummaryContainer
+@model TicketsFilterableViewModel
 
 @{
     this.ViewBag.Title = "All Tickets";
@@ -24,33 +25,33 @@
     <table class="tickets-list-gridview">
         <tr>
             <th class="tickets-list header title">
-                @this.Html.DisplayNameFor(model => ((TicketSummaryViewModel)model.TicketsList).Title)
+                @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).Title)
                 <div class="tickets-list filter">
-                    @Html.DropDownList("Title", new SelectList(this.Model.TitlesList, "Value", "Text", this.Model.Filter.Title))
+                    @Html.DropDownList("Title", new SelectList(this.Model.MetaData.TitlesList, "Value", "Text", this.Model.Filter.Title))
                 </div>
             </th>
             <th class="tickets-list header category">
-                @this.Html.DisplayNameFor(model => ((TicketSummaryViewModel)model.TicketsList).CategoryName)
+                @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).CategoryName)
                 <div class="tickets-list filter">
-                    @Html.DropDownList("CategoryId", new SelectList(this.Model.CategoriesList, "Value", "Text", this.Model.Filter.CategoryId))
+                    @Html.DropDownList("CategoryId", new SelectList(this.Model.MetaData.CategoriesList, "Value", "Text", this.Model.Filter.CategoryId))
                 </div>
             </th>
             <th class="tickets-list header author">
-                @this.Html.DisplayNameFor(model => ((TicketSummaryViewModel)model.TicketsList).AuthorName)
+                @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).AuthorName)
                 <div class="tickets-list filter">
-                    @Html.DropDownList("AuthorId", new SelectList(this.Model.AuthorsList, "Value", "Text", this.Model.Filter.AuthorId))
+                    @Html.DropDownList("AuthorId", new SelectList(this.Model.MetaData.AuthorsList, "Value", "Text", this.Model.Filter.AuthorId))
                 </div>
             </th>
             <th class="tickets-list header priority">
-                @this.Html.DisplayNameFor(model => ((TicketSummaryViewModel)model.TicketsList).Priority)
+                @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).Priority)
                 <div class="tickets-list filter">
-                    @Html.DropDownList("Priority", new SelectList(this.Model.PrioritiesList, "Value", "Text", this.Model.Filter.Priority))
+                    @Html.DropDownList("Priority", new SelectList(this.Model.MetaData.PrioritiesList, "Value", "Text", this.Model.Filter.Priority))
                 </div>
             </th>
             <th class="tickets-list header status">
-                @this.Html.DisplayNameFor(model => ((TicketSummaryViewModel)model.TicketsList).Status)
+                @this.Html.DisplayNameFor(model => ((TicketViewModel)model.TicketsList).Status)
                 <div class="tickets-list filter">
-                    @Html.DropDownList("Status", new SelectList(this.Model.StatuesList, "Value", "Text", this.Model.Filter.Status))
+                    @Html.DropDownList("Status", new SelectList(this.Model.MetaData.StatusesList, "Value", "Text", this.Model.Filter.Status))
                 </div>
             </th>
         </tr>
@@ -80,7 +81,7 @@
     </table>
 
     <div class="row-fluid">
-        <span class="right">Results: @this.Model.TotalTicketsCount</span>
+        <span class="right">Results: @this.Model.TotalRecordsCount</span>
     </div>
 
     @Html.Paging(new PagingOptions { QueryParameterName = "page", LastPage = this.Model.PagesCount, wrapperClasses = "pagination-right" })

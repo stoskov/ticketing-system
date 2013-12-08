@@ -32,8 +32,10 @@ namespace TicketingSystem.Web.Models.Tickets
 		public TicketPriority Priority { get; set; }
 
 		[Required]
-		[Display(Name="Status")]
+		[Display(Name = "Status")]
 		public TicketStatus Status { get; set; }
+
+		public TicketsMetaDataViewModel MedaData { get; set; }
 
 		public TicketCreateUpdateViewModel()
 		{

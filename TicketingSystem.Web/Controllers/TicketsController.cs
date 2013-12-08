@@ -29,7 +29,6 @@ namespace TicketingSystem.Web.Controllers
 																 AuthorName = t.Author.UserName,
 																 Priority = t.Priority,
 																 Status = t.Status,
-																 CommentsCount = t.Comments.Count,
 																 SearchRelevance = this.CalcualteRelevance(t, filter.Q)
 															 })
 													  .Where(t => t.SearchRelevance > 0)
@@ -45,17 +44,20 @@ namespace TicketingSystem.Web.Controllers
 			var authorsList = this.GetFilterList(t => new SelectListItem { Value = t.AuthorId.ToString(), Text = t.Author.UserName.ToString() });
 			var titlesList = this.GetFilterList(t => new SelectListItem { Value = t.Title.ToString(), Text = t.Title.ToString() });
 
-			var viewModel = new TicketsSummaryContainer
+			var viewModel = new TicketsFilterableViewModel
 			{
 				TicketsList = pagedTicketsList,
 				Filter = filter,
 				PagesCount = pagesCount,
-				TotalTicketsCount = filteredTicketsList.Count(),
-				CategoriesList = categoriesList,
-				PrioritiesList = prioritiesList,
-				StatuesList = statusesList,
-				AuthorsList = authorsList,
-				TitlesList = titlesList
+				TotalRecordsCount = filteredTicketsList.Count(),
+				MetaData = new TicketsMetaDataViewModel
+				{
+					CategoriesList = categoriesList,
+					PrioritiesList = prioritiesList,
+					StatusesList = statusesList,
+					AuthorsList = authorsList,
+					TitlesList = titlesList
+				}
 			};
 
 			return View(viewModel);
@@ -79,6 +81,7 @@ namespace TicketingSystem.Web.Controllers
 
 			var ticketViewModel = new TicketDetailsViewModel()
 			{
+				Id = ticket.Id,
 				AuthorName = ticket.Author.UserName,
 				CategoryName = ticket.Category.Name,
 				CategoryId = ticket.Category.Id,
@@ -87,8 +90,6 @@ namespace TicketingSystem.Web.Controllers
 				Status = ticket.Status,
 				ScreenshotUrl = ticket.ScreenshotUrl,
 				Title = ticket.Title,
-				Id = ticket.Id,
-				CommentsCount = ticket.Comments.Count
 			};
 
 			var commentsPageIndex = commentsPage.GetValueOrDefault(1);
@@ -100,7 +101,7 @@ namespace TicketingSystem.Web.Controllers
 														UserName = c.User.UserName,
 														Content = c.Content,
 														PostDate = c.PostDate,
-														TicketId = c.Ticket.Id
+														TicketId = c.Ticket.Id,
 													})
 											 .OrderByDescending(c => c.PostDate)
 											 .Skip((commentsPageIndex - 1) * Properties.Settings.Default.TicketPageCommentsPageSize)
@@ -116,8 +117,15 @@ namespace TicketingSystem.Web.Controllers
 		[HttpGet]
 		public ActionResult Create()
 		{
-			this.SetLists();
-			var ticket = new TicketCreateUpdateViewModel();
+			var ticket = new TicketCreateUpdateViewModel
+			{
+				MedaData = new TicketsMetaDataViewModel
+				{
+					CategoriesList = this.GetCategoriesList(),
+					StatusesList = this.GetStatusesList(),
+					PrioritiesList = this.GetPrioritiesList()
+				}
+			};
 
 			return this.View(ticket);
 		}
@@ -128,7 +136,12 @@ namespace TicketingSystem.Web.Controllers
 		{
 			if (!this.ModelState.IsValid)
 			{
-				SetLists();
+				ticketViewModel.MedaData = new TicketsMetaDataViewModel
+				{
+					CategoriesList = this.GetCategoriesList(),
+					StatusesList = this.GetStatusesList(),
+					PrioritiesList = this.GetPrioritiesList()
+				};
 
 				return this.View(ticketViewModel);
 			}
@@ -178,10 +191,14 @@ namespace TicketingSystem.Web.Controllers
 				Status = ticket.Status,
 				ScreenshotUrl = ticket.ScreenshotUrl,
 				Title = ticket.Title,
-				Id = ticket.Id
+				Id = ticket.Id,
+				MedaData = new TicketsMetaDataViewModel
+				{
+					CategoriesList = this.GetCategoriesList(),
+					StatusesList = this.GetStatusesList(),
+					PrioritiesList = this.GetPrioritiesList()
+				}
 			};
-
-			this.SetLists();
 
 			return this.View(ticketViewModel);
 		}
@@ -205,7 +222,12 @@ namespace TicketingSystem.Web.Controllers
 
 			if (!this.ModelState.IsValid)
 			{
-				this.SetLists();
+				ticketViewModel.MedaData = new TicketsMetaDataViewModel
+				{
+					CategoriesList = this.GetCategoriesList(),
+					StatusesList = this.GetStatusesList(),
+					PrioritiesList = this.GetPrioritiesList()
+				};
 
 				return this.View(ticketViewModel);
 			}
@@ -249,8 +271,7 @@ namespace TicketingSystem.Web.Controllers
 				Status = ticket.Status,
 				ScreenshotUrl = ticket.ScreenshotUrl,
 				Title = ticket.Title,
-				Id = ticket.Id,
-				CommentsCount = ticket.Comments.Count
+				Id = ticket.Id
 			};
 
 			return this.View(ticketViewModel);
@@ -358,13 +379,6 @@ namespace TicketingSystem.Web.Controllers
 						   };
 
 			return statuses.ToList();
-		}
-
-		private void SetLists()
-		{
-			ViewBag.CategoriesList = this.GetCategoriesList();
-			ViewBag.StatusesList = this.GetStatusesList();
-			ViewBag.PrioritiesList = this.GetPrioritiesList();
 		}
 
 		private IQueryable<Ticket> ApplyFilter(TicketFilter filter)

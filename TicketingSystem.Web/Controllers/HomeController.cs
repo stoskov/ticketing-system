@@ -22,7 +22,7 @@ namespace TicketingSystem.Web.Controllers
 												 .Take(Properties.Settings.Default.HomePageTicketsNumber)
 												 .Where(t => t.Status != TicketStatus.Closed &&
 															 t.Status != TicketStatus.Duplicate)
-												 .Select(t => new TicketSummaryViewModel()
+												 .Select(t => new TicketSummaryViewModel
 														{
 															Id = t.Id,
 															Title = t.Title,

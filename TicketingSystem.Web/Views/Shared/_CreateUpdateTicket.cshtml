@@ -3,7 +3,7 @@
 <div class="control-group">
     @Html.LabelFor(model => model.CategoryId, new { @class = "control-label" })
     <div class="controls">
-        @Html.DropDownListFor(model => model.CategoryId, (IEnumerable<SelectListItem>)ViewBag.CategoriesList)
+        @Html.DropDownListFor(model => model.CategoryId, this.Model.MedaData.CategoriesList)
         @Html.ValidationMessageFor(model => model.CategoryId, null, new { @class = "help-inline" })
     </div>
 </div>
@@ -19,7 +19,7 @@
 <div class="control-group">
     @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
     <div class="controls">
-        @Html.DropDownListFor(model => model.Priority, (IEnumerable<SelectListItem>)ViewBag.PrioritiesList)
+        @Html.DropDownListFor(model => model.Priority, this.Model.MedaData.PrioritiesList)
         @Html.ValidationMessageFor(model => model.Priority, null, new { @class = "help-inline" })
     </div>
 </div>
@@ -27,7 +27,7 @@
 <div class="control-group">
     @Html.LabelFor(model => model.Status, new { @class = "control-label" })
     <div class="controls">
-        @Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewBag.StatusesList)
+        @Html.DropDownListFor(model => model.Status, this.Model.MedaData.StatusesList)
         @Html.ValidationMessageFor(model => model.Status, null, new { @class = "help-inline" })
     </div>
 </div>

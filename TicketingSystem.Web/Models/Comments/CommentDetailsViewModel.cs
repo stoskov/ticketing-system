@@ -1,9 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using TicketingSystem.Web.Models.Base;
 
 namespace TicketingSystem.Web.Models.Comments
 {
-	public class CommentDetailsViewModel
+	public class CommentDetailsViewModel : PagebleViewModel
 	{
 		public int Id { get; set; }
 
