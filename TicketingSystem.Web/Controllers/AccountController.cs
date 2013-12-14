@@ -12,13 +12,15 @@ using Microsoft.Owin.Security;
 using TicketingSystem.Data;
 using TicketingSystem.Models;
 using TicketingSystem.Web.Models.Accounts;
+using System.Net.Mail;
+using System.Configuration;
 
 namespace TicketingSystem.Web.Controllers
 {
 	[Authorize]
-	public class AccountController : Controller
+	public class AccountController : BaseController
 	{
-		public AccountController() 
+		public AccountController()
 		{
 			this.IdentityManager = new AuthenticationIdentityManager(new IdentityStore(new AppDbContext()));
 		}
@@ -56,6 +58,16 @@ namespace TicketingSystem.Web.Controllers
 		{
 			if (this.ModelState.IsValid)
 			{
+				var user = this.Data.Users.All()
+							   .Where(u => u.UserName == model.UserName)
+							   .FirstOrDefault();
+
+				if (user != null && !user.IsConfirmed)
+				{
+					this.AddErrors(new IdentityResult("Not confirmed user"));
+					return this.View(model);
+				}
+
 				// Validate the password
 				IdentityResult result = await this.IdentityManager.Authentication.CheckPasswordAndSignInAsync(this.AuthenticationManager, model.UserName, model.Password, model.RememberMe);
 				if (result.Success)
@@ -87,15 +99,31 @@ namespace TicketingSystem.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Register(RegisterViewModel model)
 		{
+			var user = this.Data.Users.All()
+							   .Where(u => u.UserName == model.UserName)
+							   .FirstOrDefault();
+
+			if (user != null && user.Email == model.Email)
+			{
+				this.AddErrors(new IdentityResult("Email address is already registered!"));
+				return this.View(model);
+			}
+
 			if (this.ModelState.IsValid)
 			{
-				// Create a local login before signing in the user
-				var user = new AppUser(model.UserName);
-				var result = await this.IdentityManager.Users.CreateLocalUserAsync(user, model.Password);
+				var newUser = new AppUser
+				{
+					UserName = model.UserName,
+					Email = model.Email,
+					ConfirmationToken = this.CreateConfirmationToken()
+				};
+
+				var result = await this.IdentityManager.Users.CreateLocalUserAsync(newUser, model.Password);
+
 				if (result.Success)
 				{
-					await this.IdentityManager.Authentication.SignInAsync(this.AuthenticationManager, user.Id, isPersistent: false);
-					return this.RedirectToAction("Index", "Home");
+					this.SendEmailConfirmation(newUser.Email, newUser.UserName, newUser.ConfirmationToken);
+					return this.RedirectToAction("RegisterConfirmation");
 				}
 				else
 				{
@@ -103,8 +131,38 @@ namespace TicketingSystem.Web.Controllers
 				}
 			}
 
-			// If we got this far, something failed, redisplay form
 			return this.View(model);
+		}
+
+		[HttpGet]
+		[AllowAnonymous]
+		public ActionResult RegisterConfirmation()
+		{
+			return View();
+		}
+
+		[HttpGet]
+		[AllowAnonymous]
+		public async Task<ActionResult> CompleteRegistration(string username, string token)
+		{
+			var user = this.Data.Users.All()
+				.Where(u => u.UserName == username && u.ConfirmationToken == token)
+				.FirstOrDefault();
+
+			if (user != null)
+			{
+				user.IsConfirmed = true;
+				this.Data.SaveChanges();
+
+				await this.IdentityManager.Authentication.SignInAsync(this.AuthenticationManager, user.Id, true);
+
+				return this.RedirectToAction("Index", "Home");
+			}
+			else
+			{
+				return View();
+			}
+
 		}
 
 		//
@@ -148,7 +206,7 @@ namespace TicketingSystem.Web.Controllers
 			this.ViewBag.HasLocalPassword = hasLocalLogin;
 			this.ViewBag.ReturnUrl = this.Url.Action("Manage");
 			if (hasLocalLogin)
-			{ 
+			{
 				if (this.ModelState.IsValid)
 				{
 					IdentityResult result = await this.IdentityManager.Passwords.ChangePasswordAsync(this.User.Identity.GetUserName(), model.OldPassword, model.NewPassword);
@@ -209,7 +267,7 @@ namespace TicketingSystem.Web.Controllers
 			ClaimsIdentity id = await this.IdentityManager.Authentication.GetExternalIdentityAsync(this.AuthenticationManager);
 			// Sign in this external identity if its already linked
 			IdentityResult result = await this.IdentityManager.Authentication.SignInExternalIdentityAsync(this.AuthenticationManager, id);
-			if (result.Success) 
+			if (result.Success)
 			{
 				return this.RedirectToLocal(returnUrl);
 			}
@@ -221,7 +279,7 @@ namespace TicketingSystem.Web.Controllers
 				{
 					return this.RedirectToLocal(returnUrl);
 				}
-				else 
+				else
 				{
 					return this.View("ExternalLoginFailure");
 				}
@@ -246,7 +304,7 @@ namespace TicketingSystem.Web.Controllers
 			{
 				return this.RedirectToAction("Manage");
 			}
-            
+
 			if (this.ModelState.IsValid)
 			{
 				// Get the information about the user from the external login provider
@@ -313,7 +371,7 @@ namespace TicketingSystem.Web.Controllers
 		}
 
 		#region Helpers
-		
+
 		private void AddErrors(IdentityResult result)
 		{
 			foreach (var error in result.Errors)
@@ -321,7 +379,7 @@ namespace TicketingSystem.Web.Controllers
 				this.ModelState.AddModelError("", error);
 			}
 		}
-		
+
 		private ActionResult RedirectToLocal(string returnUrl)
 		{
 			if (this.Url.IsLocalUrl(returnUrl))
@@ -333,7 +391,7 @@ namespace TicketingSystem.Web.Controllers
 				return this.RedirectToAction("Index", "Home");
 			}
 		}
-		
+
 		private class ChallengeResult : HttpUnauthorizedResult
 		{
 			public ChallengeResult(string provider, string redirectUrl)
@@ -341,17 +399,44 @@ namespace TicketingSystem.Web.Controllers
 				this.LoginProvider = provider;
 				this.RedirectUrl = redirectUrl;
 			}
-			
+
 			public string LoginProvider { get; set; }
-			
+
 			public string RedirectUrl { get; set; }
-			
+
 			public override void ExecuteResult(ControllerContext context)
 			{
 				context.HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties() { RedirectUrl = this.RedirectUrl }, this.LoginProvider);
 			}
 		}
-		
+
+		private string CreateConfirmationToken()
+		{
+			return Guid.NewGuid().ToString();
+		}
+
+		private void SendEmailConfirmation(string to, string username, string confirmationToken)
+		{
+			var uri = new UriBuilder();
+			uri.Host = this.HttpContext.Request.Url.Host;
+			uri.Path = this.Url.Action("CompleteRegistration", "Account", new { username = username, token = confirmationToken });
+
+			var message = new MailMessage();
+			message.To.Add(new MailAddress(to, username));
+			message.From = new MailAddress("ticketing-system@gmail.com", "Ticketing System");
+			message.Subject = "Complete registration";
+			message.Body = "Follow the link below to complete your registration" + System.Environment.NewLine;
+			message.Body += uri.ToString();
+
+			var smtpServer = new SmtpClient(ConfigurationManager.AppSettings.Get("MailServer"));
+			smtpServer.Port = int.Parse(ConfigurationManager.AppSettings.Get("MailPort"));
+			smtpServer.UseDefaultCredentials = false;
+			smtpServer.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings.Get("MailUsername"), ConfigurationManager.AppSettings.Get("MailPassword"));
+			smtpServer.EnableSsl = true;
+
+			smtpServer.Send(message);
+		}
+
 		#endregion
 	}
 }

@@ -10,11 +10,11 @@ namespace TicketingSystem.Web
 		public static void RegisterRoutes(RouteCollection routes)
 		{
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-			
+
 			routes.MapRoute(
-				name: "Comments",
-				url: "Comments/{action}/{id}",
-				defaults: new { controller = "Comments", action = "Index", id = UrlParameter.Optional });
+				name: "CompleteRegistration",
+				url: "Account/CompleteRegistration/{username}/{token}",
+				defaults: new { controller = "Account", action = "CompleteRegistration" });
 
 			routes.MapRoute(
 				name: "Default",

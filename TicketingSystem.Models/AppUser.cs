@@ -10,15 +10,22 @@ namespace TicketingSystem.Models
 
 		public int Points { get; set; }
 
+		public string Email { get; set; }
+
+		public bool IsConfirmed { get; set; }
+
+		public string ConfirmationToken { get; set; }
+
 		public AppUser()
 		{
 			this.Points = InitialPoints;
+			this.IsConfirmed = false;
 		}
 
 		public AppUser(string userName)
+			: this()
 		{
 			this.UserName = userName;
-			this.Points = InitialPoints;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TicketingSystem.Web.Models.Accounts 
+namespace TicketingSystem.Web.Models.Accounts
 {
 	public class RegisterViewModel
 	{
@@ -8,6 +8,11 @@ namespace TicketingSystem.Web.Models.Accounts
 		[Display(Name = "User name")]
 		[StringLength(16, ErrorMessage = "The {0} must be at least {2} characters long, but not longer than {1}.", MinimumLength = 6)]
 		public string UserName { get; set; }
+
+		[Required]
+		[Display(Name = "Email")]
+		[RegularExpression(@"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,4}", ErrorMessage = "Not valid email address.")]
+		public string Email { get; set; }
 
 		[Required]
 		[StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]

@@ -280,6 +280,8 @@
     <Content Include="Views\Shared\_CreateUpdateCategory.cshtml" />
     <Content Include="Views\Shared\_CategoryDetails.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Account\RegisterConfirmation.cshtml" />
+    <Content Include="Views\Account\CompleteRegistration.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
