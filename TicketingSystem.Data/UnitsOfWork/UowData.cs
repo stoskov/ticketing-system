@@ -63,6 +63,14 @@ namespace TicketingSystem.Data.UnitsOfWork
 				return this.GetRepository<AppUser>();
 			}
 		}
+
+		public IRepository<Attachment> Attachments
+		{
+			get
+			{
+				return this.GetRepository<Attachment>();
+			}
+		}
   
 		private IRepository<T> GetRepository<T>() where T : class
 		{

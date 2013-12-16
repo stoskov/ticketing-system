@@ -15,6 +15,8 @@ namespace TicketingSystem.Data.UnitsOfWork
 
 		IRepository<AppUser> Users { get; }
 
+		IRepository<Attachment> Attachments { get; }
+
 		int SaveChanges();
 	}
 }

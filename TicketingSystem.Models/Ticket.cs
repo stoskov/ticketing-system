@@ -9,6 +9,8 @@ namespace TicketingSystem.Models
 	{
 		private ICollection<Comment> comments;
 
+		private ICollection<Attachment> attachments;
+
 		[Key]
 		public int Id { get; set; }
 
@@ -30,6 +32,18 @@ namespace TicketingSystem.Models
 
 		public virtual Category Category { get; set; }
 
+		public virtual ICollection<Attachment> Attatchments
+		{
+			get
+			{
+				return this.attachments;
+			}
+			set
+			{
+				this.attachments = value;
+			}
+		}
+
 		public virtual ICollection<Comment> Comments
 		{
 			get
@@ -46,6 +60,7 @@ namespace TicketingSystem.Models
 		{
 			this.Priority = TicketPriority.Medium;
 			this.Status = TicketStatus.New;
+			this.attachments = new HashSet<Attachment>();
 			this.comments = new HashSet<Comment>();
 		}
 	}

@@ -14,6 +14,8 @@ namespace TicketingSystem.Data
 
 		public IDbSet<Comment> Comments { get; set; }
 
+		public IDbSet<Attachment> Attachments { get; set; }
+
 		public AppDbContext()
 			: base("TicketingSystem")
 		{
