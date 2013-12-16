@@ -17,6 +17,16 @@ namespace TicketingSystem.Web
 				defaults: new { controller = "Account", action = "CompleteRegistration" });
 
 			routes.MapRoute(
+				name: "DownloadAttachment",
+				url: "Tickets/DownloadAttachment/{id}/{attachmentId}",
+				defaults: new { controller = "Tickets", action = "DownloadAttachment" });
+
+			routes.MapRoute(
+				name: "RemoveAttachment",
+				url: "Tickets/RemoveAttachment/{id}/{attachmentId}",
+				defaults: new { controller = "Tickets", action = "RemoveAttachment" });
+
+			routes.MapRoute(
 				name: "Default",
 				url: "{controller}/{action}/{id}",
 				defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional });

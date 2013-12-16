@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.AspNet.Identity;
 using TicketingSystem.Models;
 using TicketingSystem.Web.Helpers;
 using TicketingSystem.Web.Models.Comments;
+using TicketingSystem.Web.Models.Files;
 using TicketingSystem.Web.Models.Tickets;
 
 namespace TicketingSystem.Web.Controllers
@@ -91,10 +93,16 @@ namespace TicketingSystem.Web.Controllers
 				Status = ticket.Status,
 				ScreenshotUrl = ticket.ScreenshotUrl,
 				Title = ticket.Title,
+				Attachments = ticket.Attatchments
+									.Select(a => new AttachmentViewModel
+										   {
+											   Id = a.Id,
+											   Name = a.Name,
+											   Path = a.Path
+										   })
 			};
 
 			var commentsPageIndex = commentsPage.GetValueOrDefault(1);
-
 			var comments = ticket.Comments
 								 .Select(c => new CommentDetailsViewModel()
 										{
@@ -168,6 +176,11 @@ namespace TicketingSystem.Web.Controllers
 			};
 
 			this.Data.Tickets.Add(ticket);
+			this.Data.SaveChanges();
+
+			this.AddAttachments(ticket);
+
+			this.Data.Tickets.Update(ticket);
 			this.Data.SaveChanges();
 
 			return this.RedirectToAction("Index");
@@ -244,6 +257,8 @@ namespace TicketingSystem.Web.Controllers
 			ticket.ScreenshotUrl = ticketViewModel.ScreenshotUrl;
 			ticket.Title = ticketViewModel.Title;
 			ticket.Status = ticketViewModel.Status;
+
+			this.AddAttachments(ticket);
 
 			this.Data.Tickets.Update(ticket);
 			this.Data.SaveChanges();
@@ -339,6 +354,24 @@ namespace TicketingSystem.Web.Controllers
 			return this.RedirectToAction("Details", new { Id = comment.TicketId });
 		}
 
+		public ActionResult DownloadAttachment(int? id, int? attachmentId)
+		{
+			if (id == null || attachmentId == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			var ticket = this.Data.Tickets.GetById(id.GetValueOrDefault());
+			var attachment = this.Data.Attachments.GetById(attachmentId.GetValueOrDefault());
+
+			if (ticket == null || attachment == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
+
+			return File(new FileStream(attachment.Path, FileMode.Open), "application/octet-stream", attachment.Name);
+		}
+
 		private IEnumerable<SelectListItem> GetCategoriesList()
 		{
 			List<SelectListItem> categories = this.Data.Categories.All()
@@ -428,6 +461,20 @@ namespace TicketingSystem.Web.Controllers
 			result.AddRange(filterList);
 
 			return result;
+		}
+
+		private void AddAttachments(Ticket ticket)
+		{
+			foreach (string fileName in this.Request.Files)
+			{
+				var file = this.Request.Files[fileName];
+
+				if (file.HasFile())
+				{
+					var currentAttachment = AttachmentManager.AddAttachment(file, ticket);
+					ticket.Attatchments.Add(currentAttachment);
+				}
+			}
 		}
 	}
 }

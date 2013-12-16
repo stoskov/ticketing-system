@@ -180,7 +180,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\AttachmentManager.cs" />
     <Compile Include="Helpers\Filter.cs" />
+    <Compile Include="Helpers\HttpPostedFileExtensions.cs" />
     <Compile Include="Helpers\PagingOptions.cs" />
     <Compile Include="Helpers\SelectListItemComparer.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
@@ -193,6 +195,7 @@
     <Compile Include="Models\Categories\CategorySummaryViewModel.cs" />
     <Compile Include="Models\Comments\CommentPagebleViewModel.cs" />
     <Compile Include="Models\Base\FilterViewModel.cs" />
+    <Compile Include="Models\Attachments\AttachmentViewModel.cs" />
     <Compile Include="Models\Tickets\TicketSummaryViewModel.cs" />
     <Compile Include="Models\Tickets\TicketsMetaDataViewModel.cs" />
     <Compile Include="Models\Categories\CategoryDetailsViewModel.cs" />

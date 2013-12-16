@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using TicketingSystem.Models;
+using TicketingSystem.Web.Models.Files;
 
 namespace TicketingSystem.Web.Models.Base
 {
@@ -31,9 +33,12 @@ namespace TicketingSystem.Web.Models.Base
 		[Display(Name = "Status")]
 		public TicketStatus Status { get; set; }
 
-		[Display(Name="Comments Count")]
+		[Display(Name = "Comments Count")]
 		public int CommentsCount { get; set; }
-  
+
+		[Display(Name = "Files")]
+		public IEnumerable<AttachmentViewModel> Attachments { get; set; }
+
 		public string ScreenshotUrl { get; set; }
 	}
 }
