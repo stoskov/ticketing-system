@@ -17,6 +17,12 @@ namespace TicketingSystem.Models
 
 		public int TicketId { get; set; }
 
+		public AttachmentStatus Status { get; set; }
+
 		public virtual Ticket Ticket { get; set; }
+		public Attachment()
+		{
+			this.Status = AttachmentStatus.Existing;
+		}
 	}
 }

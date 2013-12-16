@@ -94,6 +94,7 @@ namespace TicketingSystem.Web.Controllers
 				ScreenshotUrl = ticket.ScreenshotUrl,
 				Title = ticket.Title,
 				Attachments = ticket.Attatchments
+									.Where(a => a.Status == AttachmentStatus.Existing)
 									.Select(a => new AttachmentViewModel
 										   {
 											   Id = a.Id,
@@ -354,6 +355,7 @@ namespace TicketingSystem.Web.Controllers
 			return this.RedirectToAction("Details", new { Id = comment.TicketId });
 		}
 
+		[AllowAnonymous]
 		public ActionResult DownloadAttachment(int? id, int? attachmentId)
 		{
 			if (id == null || attachmentId == null)
@@ -370,6 +372,28 @@ namespace TicketingSystem.Web.Controllers
 			}
 
 			return File(new FileStream(attachment.Path, FileMode.Open), "application/octet-stream", attachment.Name);
+		}
+
+		public ActionResult RemoveAttachment(int? id, int? attachmentId)
+		{
+			if (id == null || attachmentId == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			var ticket = this.Data.Tickets.GetById(id.GetValueOrDefault());
+			var attachment = this.Data.Attachments.GetById(attachmentId.GetValueOrDefault());
+
+			if (ticket == null || attachment == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
+
+			attachment.Status = AttachmentStatus.Deleted;
+			this.Data.Attachments.Update(attachment);
+			this.Data.SaveChanges();
+
+			return RedirectToAction("Details", new { Id = ticket.Id });
 		}
 
 		private IEnumerable<SelectListItem> GetCategoriesList()

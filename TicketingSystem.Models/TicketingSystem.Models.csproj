@@ -61,6 +61,7 @@
     <Compile Include="Comment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ticket.cs" />
+    <Compile Include="AttachmentStatus.cs" />
     <Compile Include="TicketStatus.cs" />
     <Compile Include="TicketPriority.cs" />
   </ItemGroup>
