@@ -285,6 +285,7 @@
     <Content Include="Views\Error\NotFound.cshtml" />
     <Content Include="Views\Account\RegisterConfirmation.cshtml" />
     <Content Include="Views\Account\CompleteRegistration.cshtml" />
+    <Content Include="Views\Shared\_AttachmentPartial.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

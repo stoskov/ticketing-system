@@ -97,11 +97,13 @@ a:hover {
 		text-align: justify;
 	}
 
-.comment-info-wrap {
+.comment-info-wrap,
+.attachment-info-wrap {
 	padding: 5px;
 }
 
-	.comment-info-wrap:hover {
+	.comment-info-wrap:hover,
+	.attachment-info-wrap:hover {
 		background-color: #ddd;
 	}
 
@@ -112,6 +114,10 @@ a:hover {
 	.comment-info-wrap .comment-info.content {
 		text-align: justify;
 	}
+
+.attachment-info-wrap {
+	line-height: 30px;
+}
 
 .gridview select {
 	width: 100%;

@@ -1,0 +1,18 @@
+﻿@using TicketingSystem.Web.Models.Attachments;
+
+@model AttachmentViewModel
+
+<div class="row-fluid">
+    <div class="attachment-info-wrap span12">
+        <div class="attachment-info content span10">
+            <a class="attachment-link" href='@Url.Action("DownloadAttachment", new { id = this.Model.TicketId, attachmentId = this.Model.Id })'>
+                @this.Model.Name
+            </a>
+        </div>
+        <div class="attachment-info controls span2">
+            <a class="attachment-link right" href='@Url.Action("RemoveAttachment", new { id = this.Model.TicketId, attachmentId = this.Model.Id })'>
+                Delete
+            </a>
+        </div>
+    </div>
+</div>

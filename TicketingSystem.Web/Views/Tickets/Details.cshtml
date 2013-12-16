@@ -18,6 +18,17 @@
 
     @Html.Partial("_TicketDetails", this.Model, new ViewDataDictionary { { "RenderButtons", true } })
 
+
+    <div class="row-fluid separate ticket-subheader">
+        Attachments:
+    </div>
+
+    @{foreach (var attachment in this.Model.Attachments)
+    {
+        @Html.Partial("_AttachmentPartial", attachment);
+    }}
+
+
     <div class="row-fluid separate ticket-subheader">
         Comments(@this.Model.CommentsCount):
     </div>
