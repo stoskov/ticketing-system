@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace TicketingSystem.Web.Models.Files
+namespace TicketingSystem.Web.Models.Attachments
 {
 	public class AttachmentViewModel
 	{
@@ -10,5 +10,7 @@ namespace TicketingSystem.Web.Models.Files
 		public string Name { get; set; }
 
 		public string Path { get; set; }
+
+		public int TicketId { get; set; }
 	}
 }

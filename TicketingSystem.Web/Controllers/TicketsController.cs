@@ -7,8 +7,8 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using TicketingSystem.Models;
 using TicketingSystem.Web.Helpers;
+using TicketingSystem.Web.Models.Attachments;
 using TicketingSystem.Web.Models.Comments;
-using TicketingSystem.Web.Models.Files;
 using TicketingSystem.Web.Models.Tickets;
 
 namespace TicketingSystem.Web.Controllers
@@ -91,7 +91,6 @@ namespace TicketingSystem.Web.Controllers
 				Description = ticket.Description,
 				Priority = ticket.Priority,
 				Status = ticket.Status,
-				ScreenshotUrl = ticket.ScreenshotUrl,
 				Title = ticket.Title,
 				Attachments = ticket.Attatchments
 									.Where(a => a.Status == AttachmentStatus.Existing)
@@ -99,7 +98,8 @@ namespace TicketingSystem.Web.Controllers
 										   {
 											   Id = a.Id,
 											   Name = a.Name,
-											   Path = a.Path
+											   Path = a.Path,
+											   TicketId = ticket.Id
 										   })
 			};
 
@@ -172,7 +172,6 @@ namespace TicketingSystem.Web.Controllers
 				CategoryId = ticketViewModel.CategoryId,
 				Description = ticketViewModel.Description,
 				Priority = ticketViewModel.Priority,
-				ScreenshotUrl = ticketViewModel.ScreenshotUrl,
 				Title = ticketViewModel.Title,
 			};
 
@@ -209,7 +208,6 @@ namespace TicketingSystem.Web.Controllers
 				Description = ticket.Description,
 				Priority = ticket.Priority,
 				Status = ticket.Status,
-				ScreenshotUrl = ticket.ScreenshotUrl,
 				Title = ticket.Title,
 				Id = ticket.Id,
 				MedaData = new TicketsMetaDataViewModel
@@ -255,7 +253,6 @@ namespace TicketingSystem.Web.Controllers
 			ticket.CategoryId = ticketViewModel.CategoryId;
 			ticket.Description = ticketViewModel.Description;
 			ticket.Priority = ticketViewModel.Priority;
-			ticket.ScreenshotUrl = ticketViewModel.ScreenshotUrl;
 			ticket.Title = ticketViewModel.Title;
 			ticket.Status = ticketViewModel.Status;
 
@@ -291,7 +288,6 @@ namespace TicketingSystem.Web.Controllers
 				Description = ticket.Description,
 				Priority = ticket.Priority,
 				Status = ticket.Status,
-				ScreenshotUrl = ticket.ScreenshotUrl,
 				Title = ticket.Title,
 				Id = ticket.Id
 			};

@@ -24,8 +24,6 @@ namespace TicketingSystem.Models
 
 		public TicketStatus Status { get; set; }
 
-		public string ScreenshotUrl { get; set; }
-
 		public string Description { get; set; }
 
 		public int CategoryId { get; set; }

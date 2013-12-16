@@ -40,7 +40,6 @@ namespace TicketingSystem.Data.Migrations
 						Category = category,
 						Description = "Ticket description. Ticket description. Ticket description. Ticket description. Ticket description. <script>alert('Hack!')</script>",
 						Title = "Ticket title No:" + j.ToString() + " - " + category.Name + "<script>alert('Hack!')</script>",
-						ScreenshotUrl = "http://telerikacademy.com/Content/Images/news-img01.png",
 						Status = (TicketStatus)(rand.Next(0, 4)),
 						Priority = (TicketPriority)(rand.Next(0, 3))
 					};

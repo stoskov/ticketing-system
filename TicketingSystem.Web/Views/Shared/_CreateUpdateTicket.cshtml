@@ -33,14 +33,6 @@
 </div>
 
 <div class="control-group">
-    @Html.LabelFor(model => model.ScreenshotUrl, new { @class = "control-label" })
-    <div class="controls">
-        @Html.EditorFor(model => model.ScreenshotUrl)
-        @Html.ValidationMessageFor(model => model.ScreenshotUrl, null, new { @class = "help-inline" })
-    </div>
-</div>
-
-<div class="control-group">
     @Html.LabelFor(model => model.Description, new { @class = "control-label" })
     <div class="controls">
         @Html.EditorFor(model => model.Description)
