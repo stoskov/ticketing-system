@@ -39,3 +39,10 @@
         @Html.ValidationMessageFor(model => model.Description, null, new { @class = "help-inline" })
     </div>
 </div>
+
+<div class="control-group">
+    <label class="control-label" for="Attachments">Attachments</label>
+    <div class="controls">
+        <input id="Attachments" type="file" name="Attachments" multiple="multiple" />
+    </div>
+</div>

@@ -97,8 +97,7 @@ a:hover {
 		text-align: justify;
 	}
 
-.comment-info-wrap,
-.attachment-info-wrap {
+.comment-info-wrap {
 	padding: 5px;
 }
 
@@ -114,6 +113,10 @@ a:hover {
 	.comment-info-wrap .comment-info.content {
 		text-align: justify;
 	}
+
+.attachment-info-wrap {
+	padding: 2px 5px;
+}
 
 .attachment-info-wrap {
 	line-height: 30px;

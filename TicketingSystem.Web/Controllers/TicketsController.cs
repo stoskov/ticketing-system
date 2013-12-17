@@ -389,6 +389,8 @@ namespace TicketingSystem.Web.Controllers
 			this.Data.Attachments.Update(attachment);
 			this.Data.SaveChanges();
 
+			AttachmentManager.RemoveAttachment(attachment);
+
 			return RedirectToAction("Details", new { Id = ticket.Id });
 		}
 
