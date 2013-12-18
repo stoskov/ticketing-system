@@ -30,7 +30,7 @@
                     var ticket = category.Tickets[j];
                     <li class="sub-item">
                         <a class="block" href="@this.Url.Action("Details", "Tickets", new { id = ticket.Id })">
-                            @category.Name
+                            @ticket.Title
                         </a>
                         <span class="muted block hint">(@ticket.CommentsCount comments)</span>
                     </li>

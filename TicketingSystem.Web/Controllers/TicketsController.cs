@@ -32,7 +32,7 @@ namespace TicketingSystem.Web.Controllers
 													 Status = t.Status,
 													 SearchRelevance = Helpers.Filter.CalcualteFilterTicketRelevance(t, filter.Q)
 												 })
-										  .Where(t => t.SearchRelevance > 0)
+										  .Where(t => t.SearchRelevance > 0 && t.Status != TicketStatus.Closed && t.Status != TicketStatus.Duplicate)
 										  .OrderByDescending(t => t.SearchRelevance)
 										  .ThenByDescending(t => t.Id);
 
@@ -487,9 +487,9 @@ namespace TicketingSystem.Web.Controllers
 
 		private void AddAttachments(Ticket ticket)
 		{
-			foreach (string fileName in this.Request.Files)
+			for (int i = 0; i < this.Request.Files.Count; i++)
 			{
-				var file = this.Request.Files[fileName];
+				var file = this.Request.Files[i];
 
 				if (file.HasFile())
 				{

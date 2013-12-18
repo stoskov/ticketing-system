@@ -28,7 +28,7 @@ namespace TicketingSystem.Data.Migrations
 
 				var category = new Category()
 				{
-					Name = "Category No:" + i.ToString() + "<script>alert('Hack!')</script>"
+					Name = "Category No:" + i.ToString()
 				};
 
 				var ticketsCount = rand.Next(1, 20);
@@ -38,8 +38,8 @@ namespace TicketingSystem.Data.Migrations
 					{
 						Author = user,
 						Category = category,
-						Description = "Ticket description. Ticket description. Ticket description. Ticket description. Ticket description. <script>alert('Hack!')</script>",
-						Title = "Ticket title No:" + j.ToString() + " - " + category.Name + "<script>alert('Hack!')</script>",
+						Description = "Ticket description. Ticket description. Ticket description. Ticket description. Ticket description.",
+						Title = "Ticket title No:" + j.ToString() + " - " + category.Name,
 						Status = (TicketStatus)(rand.Next(0, 4)),
 						Priority = (TicketPriority)(rand.Next(0, 3))
 					};
@@ -50,7 +50,7 @@ namespace TicketingSystem.Data.Migrations
 						var comment = new Comment()
 						{
 							User = user,
-							Content = "Comment content No:" + k.ToString() + " - " + ticket.Title + "<script>alert('Hack!')</script>"
+							Content = "Comment content No:" + k.ToString() + " - " + ticket.Title
 						};
 
 						ticket.Comments.Add(comment);
